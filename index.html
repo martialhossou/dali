@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse Académique - Hygiène Menstruelle (Savalou)</title>
+    
+    <!-- Bibliothèques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <!-- Police Google Fonts pour un look Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1e293b;      /* Slate 800 */
+            --secondary: #3b82f6;    /* Blue 500 */
+            --bg-page: #f1f5f9;     /* Slate 100 */
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #0f766e;      /* Teal 700 */
+            --danger: #dc2626;      /* Red 600 */
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-page); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        /* Header */
+        header { 
+            background: white; 
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 1rem;
+        }
+
+        .header-content h1 { margin: 0; font-size: 1.4rem; color: var(--primary); letter-spacing: -0.5px; }
+        .header-content p { margin: 4px 0 0 0; font-size: 0.9rem; color: var(--text-muted); }
+
+        .controls { display: flex; gap: 12px; align-items: center; }
+
+        /* Inputs & Buttons */
+        select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-family: inherit;
+            color: var(--text-main);
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+        select:focus { border-color: var(--secondary); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--secondary); transform: translateY(-1px); }
+
+        .btn-success { background: var(--accent); color: white; }
+        .btn-success:hover { background: #0d9488; }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+            gap: 24px;
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        /* Card Design */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.4;
+        }
+
+        .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+
+        /* Analysis Text Box */
+        .analysis-box {
+            background: #eff6ff; /* Very light blue */
+            border-left: 4px solid var(--secondary);
+            padding: 12px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .analysis-text {
+            font-family: 'Merriweather', serif; /* Serif pour l'analyse, ça fait plus "thèse" */
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .stat-highlight { font-weight: bold; color: var(--secondary); }
+
+        .chart-container {
+            position: relative;
+            height: 260px;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-footer {
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border);
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-sm {
+            flex: 1;
+            padding: 6px;
+            font-size: 0.8rem;
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-sm:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
+
+        /* Toast */
+        #toast {
+            visibility: hidden;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px 24px;
+            position: fixed;
+            z-index: 2000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            font-size: 0.9rem;
+        }
+        #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.7s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <h1>ANALYSE COMPLÈTE : HYGIÈNE MENSTRUELLE (SAVALOU)</h1>
+        <p>Étude longitudinale • 46 Répondantes • 55 Variables analysées</p>
+    </div>
+    
+    <div class="controls">
+        <select id="fontSelector" onchange="changeGlobalFont(this.value)">
+            <option value="'Inter', sans-serif">Inter (Moderne)</option>
+            <option value="'Merriweather', serif">Merriweather (Classique)</option>
+            <option value="'Roboto', sans-serif">Roboto (Standard)</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+        </select>
+
+        <button class="btn btn-success" onclick="downloadAllZip()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Tout Télécharger (ZIP)
+        </button>
+    </div>
+</header>
+
+<div id="grid" class="grid-container"></div>
+
+<div id="toast">Notification</div>
+
+<script>
+    // --- 1. DONNÉES (Structure précédente conservée) ---
+    const headers = [
+        "Horodateur", "Ethnie", "Âge", "Classe ou Profession?", "Avec qui vivez-vous ?", 
+        "Niveau d’étude de la mère", "Niveau d’étude de la tutrice", "Niveau d’étude du père", 
+        "Niveau d’étude du tuteur", "Aviez-vous déjà eu vos menstrues/règles ?", 
+        "A quel âge avez-vous eu les premières règles ?", 
+        "Aviez-vous des informations sur les menstruations avant leur survenue ?", 
+        "Si oui, auprès de qui les aviez-vous obtenues ?", 
+        "Etes-vous satisfaites des informations obtenues sur l’hygiène menstruelle ?", 
+        "Si non, comment faites-vous pour satisfaire votre besoin ?", 
+        "Selon vous à quoi servent les menstrues ?", "Savez-vous ce qu’est le cycle menstruel ?", 
+        "Selon vous quelle est la durée d’un cycle menstruel normal ?", 
+        "Connaissez-vous des produits d’hygiène menstruelle ?", 
+        "Si oui précisez le ou lesquels", 
+        "Quels types de produits utilisez-vous pendant vos règles ?", 
+        "Combien de fois changez-vous de protection hygiénique par jour pendant vos menstrues à l’école ?", 
+        "Manquez-vous de l'argent pour acheter des protections?", 
+        "Vous sentez-vous gênée de demander des serviettes hygiéniques ?", 
+        "Faites-vous une toilette intime pendant vos règles ?", 
+        "Si oui combien de fois par jour ?", 
+        "Avec quoi faites-vous la toilette intime ?", 
+        "Si non expliquez-nous comment vous faites.", 
+        "Prenez-vous des douches pendant vos règles ?", 
+        "Si oui combien de fois par jour ?", 
+        "Comment faites-vous à l’école pendant vos règles ?", 
+        "Qui vous a appris l’hygiène à observer pendant les menstrues ?", 
+        "Quels sont les problèmes liés aux menstruations que vous rencontrez ?", 
+        "Accepteriez-vous de participer à une séance d’information et d’éducation sur l’hygiène menstruelle/ Santé reproductive ?", 
+        "Si non pourquoi ?", 
+        "Si oui, aviez-vous une préférence sur un sujet à aborder ? (Précisez-le)", 
+        "Avez-vous des démangeaisons/brûlures mictionnelles pendant vos règles ?", 
+        "Si oui, préciser", 
+        "Ressentez-vous des douleurs au bas ventre pendant vos règles ?", 
+        "Comment gerez-vous ces douleurs pendant les règles ?", 
+        "Existe-t-il une Infirmerie au sein du Collège ?", 
+        "Est-elle fonctionnelle ?", 
+        "Aviez-vous déjà reçu une fois des calmants pendant vos règles ?", 
+        "Aviez-vous reçu une éducation sur l’hygiène menstruelle à l’école ?", 
+        "Existe-t-il des toilettes pour filles au sein du Collège ?", 
+        "Pouvez-vous fermer à l’intérieur les toilettes et vous changer en toute intimité ?", 
+        "Où jetez-vous vos protections usagées ?", 
+        "Aviez-vous reçu gratuitement des serviettes hygiéniques ?", 
+        "Si oui, qui vous l’avais donné ?", 
+        "Profession du père", "Profession de la mère", 
+        "Niveau d’instruction du père", "Niveau d’instruction de la mère", 
+        "Source principale de revenu du ménage", 
+        "Disponibilité régulière de ressources financières pour l’achat de serviettes"
+    ];
+
+    // Données brutes compressées pour le code (46 lignes)
+    const rawData = [
+        { h:"5/20/2026 12:54:06", e:"Fon", a:"15", c:"SECONDE", v:"Parents", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"Jamais", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"RIEN", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"QUELLES SONT LES METHODES CONTRACEPTIVES DE GROSSESSE", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"DIRECTEUR", pm:"DIRECTRICE", ip:"Supérieur", im:"Supérieur", rev:"SALAIRE DES PARENTS", dispo:"OUI" },
+        { h:"5/20/2026 13:05:05", e:"Mahi", a:"21", c:"3 EME ANNEE", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Maman, Amies, Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tampons", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"je vais à l'infirmerie afin de rester aliter", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"néant", dem:"oui", pdem:"C’est normal", ventre:"oui", gdo:"Je prends des calmants", inf:"oui", fonc:"oui", calm:"oui", edu:"oui", toiF:"oui", int:"oui", jet:"Emballées dans un sachet noir et jeter dans la poubelle à l’école", grat:"non", qdon:"*", pp:"insitituteur", pm:"ménageur", ip:"Supérieur", im:"Secondaire", rev:"père et mère", dispo:"OUI" },
+        { h:"5/20/2026 13:09:43", e:"Fon", a:"25 ANS", c:"*", v:"Parents", nm:"Primaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman, Sœur", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:13:22", e:"Fon", a:"24", c:"*", v:"Seule", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tampons", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Dysménorhée", acc:"OUI", npourquoi:"*", pref:"non, je suis polyvalente", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:23:41", e:"Mahi", a:"23", c:"*", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Amies", sat:"NON", ncom:"Je m'informe sur internet", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Tampons", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel", freq:"3 fois/jour", arg:"Souvent", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman, Réseaux sociaux", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:31:22", e:"Fon", a:"23", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruite", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman, Sœur", sat:"NON", ncom:"demander à ma mère", but:"Aucune idée", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"2 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau simple, eau tiède", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"les règles ne sont jamais arrivées à l'école", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:39:52", e:"nago", a:"24", c:"licence", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruite", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Amies", sat:"NON", ncom:"demander à mon entourage", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"4 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"4 fois/jour", ato:"eau tiède pour la toilette à cause de mes dysménorrhée", nto:"eau tiède pour la toilette à cause de mes dysménorrhée", dou:"OUI", fdo:"3 fois/jour", eco:"des fois je trouve des excuses pour rentrer", qui:"Sœur", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe, Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"comment faire pour ne pas avoir les règles douloureuses?", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants, je reste à la maison la durée du saignement les deux premiers jours. j'utilise des compress chaudes sur le ventre", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:43:05", e:"Aja", a:"28", c:"Terminale", v:"Seule", nm:"Secondaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Maman, Enseignement", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je fais la toilette intime", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:46:08", e:"Mahi", a:"26", c:"*", v:"Parents", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"J'utilise l'eau avec un produit de la pharmacie pour faire ma toilette", dou:"OUI", fdo:"3 fois/jour", eco:"je garde des serviettes secours et je me controle", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:50:11", e:"*", a:"28", c:"*", v:"Seule", nm:"Supérieure", nt:"Supérieure", np:"Primaire", ntu:"Supérieure", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau simple", nto:"j'utilise l'eau simple pour faire ma toilette", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"pour bien etre propre et éviter les infections", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 13:54:52", e:"Fon", a:"28", c:"*", v:"Seule", nm:"Peu instruite", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel, Tampons, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je pars dans les toilettes pour me changer et pour me nettoyer avec de l'eau", qui:"Amies", prob:"Coût, Peur de fuite de l’uniforme, Moqueries des camarades de classe, Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"règles douloureuses", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:04:23", e:"Idaasha", a:"30", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"*", dur:"Entre 21 et 35 jours", prod:"*", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques lavables", freq:"2 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"mal au bas ventre", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:08:09", e:"Aja", a:"28", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruite", ntu:"*", m:"OUI", age:"11 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Amies", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:12:20", e:"Ifè", a:"38", c:"3 ème", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"*", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"lorsque j'allais à l'école ,je gardais mes protections pour ne pas etre surprises", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"comment calculer son cycle menstruel", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:16:14", e:"Losso", a:"28", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"9 ans", inf:"NON", src:"*", sat:"NON", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"2 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Douleur pelvienne", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:21:42", e:"Ifè", a:"18", c:"3 ème", v:"Parents", nm:"Primaire", nt:"Primaire", np:"Primaire", ntu:"Peu instruit", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques lavables", util:"Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je demande la permission auprès des monsieurs et je passe rapidement aux toilettes pour aller me changer de couche", qui:"Maman", prob:"Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"Je ne sais pas", ventre:"oui", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"cultivateur", pm:"cultivatrice", ip:"Non instruit", im:"Non instruit", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:25:31", e:"Fon", a:"22", c:"Licence", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Aucune idée", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"quelles sont les conséquences d'une mauvaise hygiène pendant les règles?", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:28:29", e:"Nago", a:"26", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"NON", ncom:"*", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"MOI MEME", prob:"*", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:31:49", e:"LOKPA", a:"32", c:"Technicienne agricole", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Sœur", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"*", ncom:"*", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Sœur", prob:"Coût, Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"fréquence du changement des couches", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je prends des calmants, je prend le calmant ibucap", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:34:23", e:"Ifè", a:"18", c:"Coiffeuse", v:"Parents", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple tiède", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 15:38:02", e:"*", a:"33", c:"*", v:"*", nm:"Supérieure", nt:"*", np:"*", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"*", ncom:"PLUS TARD MA Mère m'a aider", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques lavables", util:"Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"connaitre les irrégularités sur l'hygiène menstrulle", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:14:20", e:"goun", a:"18", c:"*", v:"Parents", nm:"Peu instruite", nt:"*", np:"Primaire", ntu:"Secondaire", m:"OUI", age:"13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"NON", ncom:"*", util:"Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"Je garde de l'eau au cas ou il n'y en aura pas", qui:"Amies", prob:"Coût, Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"intéret des règles", dem:"oui", pdem:"J’ai honte de me gratter devant mes camarades", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:17:48", e:"Mahi", a:"28", c:"*", v:"*", nm:"*", nt:"*", np:"*", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"Sur les calculs du cycle menstruel", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:22:08", e:"goun", a:"30", c:"*", v:"Conjoint(e)", nm:"*", nt:"*", np:"*", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"*", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Tante", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe, regard des autres", acc:"OUI", npourquoi:"*", pref:"comment entretenir son corps pendant les menstrues?", dem:"oui", pdem:"J’ai honte de me gratter devant mes camarades, C’est une infection", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:24:30", e:"Fon", a:"25", c:"Terminale", v:"Parents", nm:"Secondaire", nt:"*", np:"*", ntu:"Primaire", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Souvent", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:27:25", e:"Mahi", a:"15", c:"*", v:"Tutrice/Tuteur", nm:"Primaire", nt:"Peu instruite", np:"Supérieure", ntu:"Peu instruit", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"NON", ncom:"*", util:"Tissu menstruel", freq:"2 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"non", int:"non", jet:"*", grat:"non", qdon:"*", pp:"Etudiant", pm:"Ménagère", ip:"Supérieur", im:"Primaire", rev:"*", dispo:"NON" },
+        { h:"5/20/2026 16:31:41", e:"EWE", a:"22", c:"Licence", v:"Seule", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman, Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tampons, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"plusieurs fois", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je me change dans les toilettes de l'école et parfois je rentre me changer à la maison puis je reviens à l'école", qui:"Maman, Réseaux sociaux", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:35:33", e:"Mahi", a:"17", c:"Première", v:"Parents", nm:"Peu instruite", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"2 fois/jour", arg:"Souvent", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Réseaux sociaux", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"C’est normal, C’est une infection", ventre:"oui", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"non", int:"non", jet:"Enterrées ou brûlées", grat:"non", qdon:"*", pp:"Hygiène sanitaire et corporelle", pm:"vendeuse et couturière", ip:"Supérieur", im:"Non instruit", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:38:56", e:"Fon", a:"16", c:"Seconde", v:"Parents", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"12 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Moqueries des camarades de classe, Distance école/maison pour se changer", acc:"Non", npourquoi:"j'ai déjà participer plusieurs fois", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"Ecole", pp:"charpentier", pm:"couturière", ip:"Secondaire", im:"Primaire", rev:"argent des parents", dispo:"OUI" },
+        { h:"5/20/2026 16:43:44", e:"Mahi", a:"16", c:"Seconde", v:"Parents", nm:"Peu instruite", nt:"*", np:"Primaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Souvent", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"NON", fdo:"*", eco:"rein du tout mais parfois genée", qui:"*", prob:"*", acc:"OUI", npourquoi:"*", pref:"conseils pour ne pas etre infectée", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"non", jet:"*", grat:"oui", qdon:"FONDATION CLAUDINE TALON", pp:"Matelacier", pm:"Commerçante", ip:"Primaire", im:"Non instruit", rev:"*", dispo:"NON" },
+        { h:"5/20/2026 16:45:31", e:"Mahi", a:"18", c:"Première", v:"Parents", nm:"Peu instruite", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Tampons, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Coût, Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"hygiène menstruelle", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:48:56", e:"Biali", a:"15", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Tampons, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je reste tranquille", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"oui", int:"non", jet:"Enterrées ou brûlées", grat:"non", qdon:"*", pp:"Pasteur", pm:"Couturière", ip:"Supérieur", im:"Primaire", rev:"*", dispo:"OUI" },
+        { h:"5/20/2026 16:51:22", e:"Nago", a:"20", c:"Première", v:"Tutrice/Tuteur", nm:"Peu instruite", nt:"Peu instruite", np:"Primaire", ntu:"Peu instruit", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Amies", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Souvent", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je suis calme dans mon coin", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"oui pour mieux savoir les choses dans l'hygiène menstruelle et la santé reproductive", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 16:54:11", e:"Mahi", a:"15", c:"Seconde", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"un peu stressé à l'école pendant les règles", qui:"Maman", prob:"Peur de fuite de l’uniforme, Distance école/maison pour se changer", acc:"Non", npourquoi:"je suis déjà satisfaite des informations reçues", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"Educateur social", pm:"revendeuse", ip:"Supérieur", im:"Secondaire", rev:"du travail de mes parents", dispo:"OUI" },
+        { h:"5/20/2026 16:55:34", e:"Ifè", a:"36", c:"*", v:"Parents", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"13 ans", inf:"NON", src:"*", sat:"*", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:01:42", e:"Sahouè", a:"28", c:"revendeuse", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Sœur", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Sœur", prob:"douleur", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants, tisane", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:04:39", e:"Fon", a:"20", c:"Couturière", v:"Conjoint(e)", nm:"Secondaire", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"4 fois / jour", arg:"Jamais", g:"Rarement", toi:"OUI", fto:"4 fois / jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"4 fois / jour", eco:"*", qui:"Maman", prob:"Peur de fuite dans les habits", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:06:31", e:"Mahi", a:"19", c:"Première", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"NON", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"l'abstinence sexuelle et santé reproductive", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:08:16", e:"Ifè", a:"19", c:"Première", v:"Parents", nm:"Peu instruite", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"abstinence sexuelle et santé reproductive", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:11:18", e:"Fon", a:"20", c:"Revendeuse", v:"Conjoint(e)", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"père", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"*", prob:"Peur de fuite de l’uniforme, douleur", acc:"OUI", npourquoi:"*", pref:"qu'est ce que l'hygiène menstruelle?", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants, clou de girofle + sodabi+citron", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:14:04", e:"Goun", a:"16", c:"Seconde", v:"Parents", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman, Enseignante", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"oui", int:"non", jet:"*", grat:"non", qdon:"*", pp:"Opérateur économique", pm:"Professeur de Math", ip:"Supérieur", im:"Supérieur", rev:"*", dispo:"OUI" },
+        { h:"5/20/2026 17:16:16", e:"Nago", a:"18", c:"Première", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman, Réseaux sociaux", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:19:38", e:"Aja", a:"Adja", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Primaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je suis calme", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"non", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"Tailleur", pm:"Coiffeuse", ip:"Primaire", im:"Primaire", rev:"*", dispo:"NON" },
+        { h:"5/20/2026 17:24:26", e:"Fon", a:"19", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je suis calme", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
+        { h:"5/20/2026 17:27:49", e:"Mahi", a:"17", c:"Première", v:"Parents", nm:"Secondaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"On ne se balade pas trop car on peut etre tachée", qui:"Maman", prob:"douleur", acc:"OUI", npourquoi:"*", pref:"comment se protéger pendant les menstrues pour ne pas etre tachée", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"non", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"Menuisier", pm:"Jadinière", ip:"Secondaire", im:"Secondaire", rev:"argent des parents", dispo:"NON" },
+        { h:"5/20/2026 17:31:25", e:"Mahi", a:"17", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Primaire", ntu:"*", m:"OUI", age:"13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques lavables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"Je ne sais pas", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"non", int:"non", jet:"Emballées dans un sachet noir et jeter à la poubelle à la maison", grat:"non", qdon:"*", pp:"Retraité en Cadaire", pm:"Vendeuse", ip:"Primaire", im:"Non instruit", rev:"argent des parents", dispo:"OUI" }
+    ];
+
+    const keyMap = [
+        "h", "e", "a", "c", "v", "nm", "nt", "np", "ntu", "m", "age", "inf", "src", "sat", "ncom", "but", "cyc", "dur", "prod", "pprec", "util", "freq", "arg", "g", "toi", "fto", "ato", "nto", "dou", "fdo", "eco", "qui", "prob", "acc", "npourquoi", "pref", "dem", "pdem", "ventre", "gdo", "inf", "fonc", "calm", "edu", "toiF", "int", "jet", "grat", "qdon", "pp", "pm", "ip", "im", "rev", "dispo"
+    ];
+
+    // --- 2. MOTEUR D'ANALYSE INTELLIGENTE ---
+    function getDescription(header, labels, data, total) {
+        if (!labels || labels.length === 0) return "Aucune donnée disponible pour cette variable.";
+
+        const topLabel = labels[0];
+        const topCount = data[0];
+        const topPct = Math.round((topCount / total) * 100);
+        const diversity = labels.length;
+
+        let text = "";
+        const highlight = (t) => `<span class="stat-highlight">${t}</span>`;
+
+        // Logique contextuelle basée sur les mots-clés de la question
+        const h = header.toLowerCase();
+
+        if (h.includes("ethnie")) {
+            text = `La population de l'étude est majoritairement composée du groupe ${highlight(topLabel)} (${topPct}%). Cela reflète la démographie locale de la zone de Savalou.`;
+        } 
+        else if (h.includes("âge") || h.includes("age")) {
+            text = `La réponse la plus fréquente concernant l'âge est ${highlight(topLabel)}. Cela suggère que l'échantillon est ${topLabel.includes(">") ? "plutôt âgé" : "jeune ou adulte"}.`;
+        }
+        else if (h.includes("classe") || h.includes("profession")) {
+            text = `Le statut socioprofessionnel dominant est ${highlight(topLabel)}. Cela indique que l'enquête a touché principalement une population ${topLabel.includes("ème") ? "scolarisée" : "active"}.`;
+        }
+        else if (h.includes("avant leur survenue") || h.includes("information")) {
+            if (topLabel.toUpperCase() === "NON") text = `Une majorité (${topPct}%) des répondantes ${highlight("n'avaient aucune information")} avant l'arrivée des premières règles. C'est un facteur de risque psychologique important.`;
+            else text = `La majorité (${topPct}%) avait reçu une information. Cela montre un début de transmission du savoir, probablement intra-familiale.`;
+        }
+        else if (h.includes("auprès de qui")) {
+            text = `La source principale d'information est ${highlight(topLabel)}. Cela confirme le rôle central de la ${topLabel.includes("Maman") ? "famille maternelle" : "famille"} dans l'éducation initiale.`;
+        }
+        else if (h.includes("produits utilisez")) {
+            text = `Le produit le plus utilisé est ${highlight(topLabel)}. ${topLabel.toLowerCase().includes("tissu") ? "L'usage du tissu révèle souvent une contrainte économique ou une habitude culturelle." : "L'usage de protections jetables indique un accès au marché moderne."}`;
+        }
+        else if (h.includes("problèmes") || h.includes("rencontrés")) {
+            text = `Le problème majeur cité est ${highlight(topLabel)}. ${topLabel.toLowerCase().includes("fuite") || topLabel.toLowerCase().includes("peur") ? "L'anxiété sociale liée aux fuites est un obstacle majeur à la sérénité." : "Les difficultés logistiques et sanitaires prédominent."}`;
+        }
+        else if (h.includes("douleur") || h.includes("ventre")) {
+            if (topLabel.toUpperCase() === "OUI") text = `Une forte proportion (${topPct}%) ressent des douleurs. La dysménorrhée est une plainte fréquente nécessitant une prise en charge.`;
+            else text = `La majorité ne ressent pas de douleurs sévères, indiquant un cycle plutôt physiologique pour cet échantillon.`;
+        }
+        else if (h.includes("infirmerie") || h.includes("fonctionnelle") || h.includes("toilettes")) {
+            text = `Concernant les infrastructures scolaires, la situation est ${highlight(topLabel)}. ${topLabel.toUpperCase() === "NON" || topLabel.toUpperCase() === "NON" ? "L'absence ou la non-fonctionnalité des infrastructures est un frein à la gestion hygiénique à l'école." : "La présence d'infrastructures facilite la gestion des règles."}`;
+        }
+        else if (h.includes("manque d'argent")) {
+            if (topLabel.toUpperCase() === "JAMAIS") text = `Heureusement, ${topPct}% des femmes ne manquent jamais d'argent pour des protections.`;
+            else text = `Le facteur économique est critique : ${topPct}% déclarent manquer d'argent. Cela force l'usage de méthodes peu hygiéniques (tissu).`;
+        }
+        else {
+            // Générique intelligent
+            if (diversity > 5) {
+                text = `Les réponses sont très diversifiées (${diversity} catégories différentes). Toutefois, ${highlight(topLabel)} ressort comme la tendance principale (${topCount} mentions).`;
+            } else {
+                text = `Il existe un relatif consensus. ${highlight(topLabel)} est la réponse dominante, citée par ${topPct}% des répondantes.`;
+            }
+        }
+
+        return text;
+    }
+
+    // --- 3. LOGIQUE DE RENDU ---
+    const grid = document.getElementById('grid');
+    const totalRespondents = rawData.length;
+    let chartInstances = [];
+    
+    // Palette Pro
+    const proPalette = ['#1e293b', '#3b82f6', '#0f766e', '#d97706', '#dc2626', '#64748b', '#7c3aed', '#db2777'];
+
+    headers.forEach((header, index) => {
+        const key = keyMap[index];
+        if (!key) return;
+
+        // Traitement données
+        const columnData = rawData.map(row => row[key]).filter(val => val && val !== "*");
+        const counts = {};
+        columnData.forEach(val => {
+            if (val.includes(',')) {
+                val.split(',').forEach(p => { const c = p.trim(); if(c) counts[c] = (counts[c] || 0) + 1; });
+            } else {
+                const c = val.trim(); if(c) counts[c] = (counts[c] || 0) + 1;
+            }
+        });
+
+        let labels = Object.keys(counts);
+        let data = Object.values(counts);
+
+        // Limiter visuel si trop de catégories
+        if (labels.length > 8) {
+            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 8);
+            labels = []; data = [];
+            sorted.forEach(e => { labels.push(e[0]); data.push(e[1]); });
+        }
+
+        // Type Graphique
+        let chartType = 'bar';
+        if (labels.length <= 4) chartType = 'doughnut';
+
+        // Génération HTML
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const descriptionHTML = getDescription(header, labels, data, totalRespondents);
+
+        card.innerHTML = `
+            <div class="card-header">
+                <h3>${index + 1}. ${header}</h3>
+            </div>
+            <div class="card-body">
+                <div class="analysis-box">
+                    <p class="analysis-text">${descriptionHTML}</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart_${index}"></canvas>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn-sm" onclick="copyChart('chart_${index}')">📋 Copier</button>
+                <button class="btn-sm" onclick="downloadChart('chart_${index}')">⬇️ Télécharger</button>
+            </div>
+        `;
+        grid.appendChild(card);
+
+        // Chart.js
+        const ctx = document.getElementById(`chart_${index}`).getContext('2d');
+        const bgColors = data.map((_, i) => proPalette[i % proPalette.length]);
+
+        const newChart = new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Réponses',
+                    data: data,
+                    backgroundColor: chartType === 'bar' ? '#3b82f6' : bgColors,
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: labels.length > 4 ? 'y' : 'x',
+                plugins: {
+                    legend: { display: chartType === 'doughnut', position: 'right', labels: { font: { family: 'Inter' }, usePointStyle: true } },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleFont: { family: 'Inter', weight: 'bold' },
+                        bodyFont: { family: 'Inter' },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: chartType === 'bar' ? {
+                    x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } },
+                    y: { grid: { color: '#e2e8f0' }, border: { display: false } }
+                } : {}
+            }
+        });
+        chartInstances.push(newChart);
+    });
+
+    // --- 4. FONCTIONS GLOBALES ---
+    function changeGlobalFont(fontFamily) {
+        document.body.style.fontFamily = fontFamily;
+        Chart.defaults.font.family = fontFamily;
+        chartInstances.forEach(c => c.update());
+        showToast("Police changée en " + fontFamily);
+    }
+
+    function downloadChart(id) {
+        const canvas = document.getElementById(id);
+        const link = document.createElement('a');
+        link.download = `Analyse_${id}.png`;
+        link.href = canvas.toDataURL("image/png", 1.0);
+        link.click();
+    }
+
+    function copyChart(id) {
+        const canvas = document.getElementById(id);
+        canvas.toBlob(blob => {
+            try {
+                navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+                showToast("Graphique copié !");
+            } catch (e) { alert("Copie non supportée par ce navigateur."); }
+        });
+    }
+
+    async function downloadAllZip() {
+        const zip = new JSZip();
+        const folder = zip.folder("Memoire_Savalou_Charts");
+        showToast("Compression en cours...");
+        
+        for (let i = 0; i < chartInstances.length; i++) {
+            const canvas = document.getElementById(`chart_${i}`);
+            if(canvas) {
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                folder.file(`${i+1}_${headers[i].substring(0,20).replace(/[^a-z0-9]/gi,'_')}.png`, blob);
+            }
+        }
+        zip.generateAsync({type:"blob"}).then(c => saveAs(c, "Memoire_Complet_Analyse.zip"));
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.innerText = msg;
+        t.className = "show";
+        setTimeout(() => t.className = t.className.replace("show", ""), 3000);
+    }
+</script>
+
+</body>
+</html>
