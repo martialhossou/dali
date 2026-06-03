@@ -1,543 +1,1622 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyse Académique - Hygiène Menstruelle (Savalou)</title>
-    
-    <!-- Bibliothèques -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    
-    <!-- Police Google Fonts pour un look Pro -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analyse Complète — Hygiène Menstruelle à Savalou</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --rouge:    #c0392b;
+  --rouge-lt: #f5b7b1;
+  --bleu:     #1a5276;
+  --bleu-lt:  #d6eaf8;
+  --vert:     #1e8449;
+  --vert-lt:  #d5f5e3;
+  --or:       #b7950b;
+  --or-lt:    #fef9e7;
+  --violet:   #6c3483;
+  --violet-lt:#e8daef;
+  --gris:     #566573;
+  --gris-lt:  #f2f3f4;
+  --text:     #1c2833;
+  --bg:       #fafbfc;
+  --border:   #d5d8dc;
+  --card-bg:  #ffffff;
+  --shadow:   0 4px 20px rgba(0,0,0,0.08);
+}
 
-    <style>
-        :root {
-            --primary: #1e293b;      /* Slate 800 */
-            --secondary: #3b82f6;    /* Blue 500 */
-            --bg-page: #f1f5f9;     /* Slate 100 */
-            --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --accent: #0f766e;      /* Teal 700 */
-            --danger: #dc2626;      /* Red 600 */
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg-page); 
-            color: var(--text-main); 
-            margin: 0; 
-            padding: 0; 
-        }
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+}
 
-        /* Header */
-        header { 
-            background: white; 
-            border-bottom: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            flex-wrap: wrap; 
-            gap: 1rem;
-        }
+/* ===== PAGE DE TITRE ===== */
+.cover {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a5276 0%, #6c3483 50%, #c0392b 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px 40px;
+  page-break-after: always;
+}
+.cover-badge {
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.4);
+  color: #fff;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 8px 24px;
+  border-radius: 30px;
+  margin-bottom: 40px;
+}
+.cover h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  max-width: 700px;
+}
+.cover p {
+  color: rgba(255,255,255,0.85);
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin-bottom: 10px;
+}
+.cover-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.cover-stat {
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 20px 30px;
+  color: #fff;
+}
+.cover-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  display: block;
+}
+.cover-stat-label {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-        .header-content h1 { margin: 0; font-size: 1.4rem; color: var(--primary); letter-spacing: -0.5px; }
-        .header-content p { margin: 4px 0 0 0; font-size: 0.9rem; color: var(--text-muted); }
+/* ===== GRILLE PRINCIPALE ===== */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 40px 30px;
+}
 
-        .controls { display: flex; gap: 12px; align-items: center; }
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--bleu);
+  margin: 60px 0 30px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--bleu);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-title span {
+  background: var(--bleu);
+  color: #fff;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+}
 
-        /* Inputs & Buttons */
-        select {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            font-family: inherit;
-            color: var(--text-main);
-            background: white;
-            cursor: pointer;
-            outline: none;
-        }
-        select:focus { border-color: var(--secondary); }
+/* ===== CARTE GRAPHIQUE ===== */
+.chart-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 50px;
+  overflow: hidden;
+  page-break-inside: avoid;
+}
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s ease;
-        }
+.chart-card-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+}
+.q-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gris);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.q-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  color: var(--text);
+  line-height: 1.4;
+}
 
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--secondary); transform: translateY(-1px); }
+.chart-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 320px;
+}
 
-        .btn-success { background: var(--accent); color: white; }
-        .btn-success:hover { background: #0d9488; }
+.chart-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid var(--border);
+}
+.chart-panel canvas {
+  max-height: 280px;
+}
 
-        /* Grid Layout */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
-            gap: 24px;
-            max-width: 1600px;
-            margin: 2rem auto;
-            padding: 0 2rem 2rem 2rem;
-        }
+/* ===== PANNEAU DONNÉES ===== */
+.data-panel {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
 
-        /* Card Design */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
+.data-title {
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gris);
+  margin-bottom: 14px;
+}
 
-        .card-header {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--border);
-            background: #f8fafc;
-        }
+.data-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.data-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.data-label {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+.data-bar-wrap {
+  width: 120px;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.data-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+.data-num {
+  font-weight: 700;
+  font-size: 0.88rem;
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.data-pct {
+  font-size: 0.8rem;
+  color: var(--gris);
+  width: 42px;
+  text-align: right;
+  flex-shrink: 0;
+}
 
-        .card-header h3 {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary);
-            line-height: 1.4;
-        }
+/* ===== ZONE ANALYSE ===== */
+.analysis-band {
+  background: var(--bleu-lt);
+  border-top: 1px solid var(--border);
+  padding: 18px 28px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.analysis-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.analysis-text {
+  font-size: 0.92rem;
+  color: #154360;
+  line-height: 1.65;
+}
+.analysis-text strong {
+  color: var(--bleu);
+}
 
-        .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+/* ===== NOTES PEU DE RÉPONDANTS ===== */
+.note-band {
+  background: var(--or-lt);
+  border-top: 1px solid #f0d060;
+  padding: 12px 28px;
+  font-size: 0.83rem;
+  color: #7d6608;
+}
 
-        /* Analysis Text Box */
-        .analysis-box {
-            background: #eff6ff; /* Very light blue */
-            border-left: 4px solid var(--secondary);
-            padding: 12px;
-            border-radius: 0 6px 6px 0;
-            margin-bottom: 1.5rem;
-        }
+/* Graphe plein largeur quand données qualitatives */
+.chart-card-body.full {
+  grid-template-columns: 1fr;
+}
+.chart-card-body.full .chart-panel {
+  border-right: none;
+}
+.chart-card-body.wide .chart-panel {
+  flex: 1.2;
+}
 
-        .analysis-text {
-            font-family: 'Merriweather', serif; /* Serif pour l'analyse, ça fait plus "thèse" */
-            font-size: 0.9rem;
-            color: #1e3a8a;
-            line-height: 1.6;
-            margin: 0;
-        }
+/* Couleurs catégorielles */
+.c0 { background: #1a5276; }
+.c1 { background: #c0392b; }
+.c2 { background: #1e8449; }
+.c3 { background: #b7950b; }
+.c4 { background: #6c3483; }
+.c5 { background: #117a65; }
+.c6 { background: #873600; }
+.c7 { background: #1a5276; opacity:0.5; }
 
-        .stat-highlight { font-weight: bold; color: var(--secondary); }
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gris);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+}
 
-        .chart-container {
-            position: relative;
-            height: 260px;
-            width: 100%;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-footer {
-            padding-top: 1rem;
-            border-top: 1px dashed var(--border);
-            display: flex;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .btn-sm {
-            flex: 1;
-            padding: 6px;
-            font-size: 0.8rem;
-            background: white;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-sm:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
-
-        /* Toast */
-        #toast {
-            visibility: hidden;
-            background-color: #1e293b;
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 12px 24px;
-            position: fixed;
-            z-index: 2000;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
-            font-size: 0.9rem;
-        }
-        #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.7s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-
-    </style>
+@media print {
+  .chart-card { page-break-inside: avoid; }
+  .cover { page-break-after: always; }
+}
+</style>
 </head>
 <body>
 
-<header>
-    <div class="header-content">
-        <h1>ANALYSE COMPLÈTE : HYGIÈNE MENSTRUELLE (SAVALOU)</h1>
-        <p>Étude longitudinale • 46 Répondantes • 55 Variables analysées</p>
+<!-- ========== PAGE DE COUVERTURE ========== -->
+<div class="cover">
+  <div class="cover-badge">Étude de terrain — Savalou, Bénin — Mai 2026</div>
+  <h1>Hygiène Menstruelle et Santé Reproductive</h1>
+  <p>Analyse complète des données issues d'une enquête menée auprès de femmes et de jeunes filles scolarisées et non-scolarisées de Savalou</p>
+  <p style="font-size:0.9rem;opacity:0.7;margin-top:8px;">Formulaire Google Forms — 54 questions — Collecte du 20 mai 2026</p>
+  <div class="cover-stats">
+    <div class="cover-stat">
+      <span class="cover-stat-num">46</span>
+      <span class="cover-stat-label">Répondantes</span>
     </div>
-    
-    <div class="controls">
-        <select id="fontSelector" onchange="changeGlobalFont(this.value)">
-            <option value="'Inter', sans-serif">Inter (Moderne)</option>
-            <option value="'Merriweather', serif">Merriweather (Classique)</option>
-            <option value="'Roboto', sans-serif">Roboto (Standard)</option>
-            <option value="'Times New Roman', serif">Times New Roman</option>
-        </select>
-
-        <button class="btn btn-success" onclick="downloadAllZip()">
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Tout Télécharger (ZIP)
-        </button>
+    <div class="cover-stat">
+      <span class="cover-stat-num">54</span>
+      <span class="cover-stat-label">Questions posées</span>
     </div>
-</header>
+    <div class="cover-stat">
+      <span class="cover-stat-num">100%</span>
+      <span class="cover-stat-label">Ont déjà eu leurs règles</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">95.7%</span>
+      <span class="cover-stat-label">Prêtes à se former</span>
+    </div>
+  </div>
+</div>
 
-<div id="grid" class="grid-container"></div>
+<div class="container">
 
-<div id="toast">Notification</div>
+<!-- ===== SECTION 1 : PROFIL SOCIODÉMOGRAPHIQUE ===== -->
+<div class="section-title">Profil sociodémographique <span>Questions 1 à 9</span></div>
 
+<!-- Q2 : ETHNIE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 2 — Appartenance ethnique</div>
+    <div class="q-text">Ethnie des répondantes</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_ethnie"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Répartition des répondantes (N = 44 réponses valides)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Mahi</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:27.3%"></div></div><div class="data-num">12</div><div class="data-pct">27,3%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Fon</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:25%"></div></div><div class="data-num">11</div><div class="data-pct">25,0%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Ifè</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:11.4%"></div></div><div class="data-num">5</div><div class="data-pct">11,4%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Nago / nago</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:9.1%"></div></div><div class="data-num">4</div><div class="data-pct">9,1%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Aja</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:6.8%"></div></div><div class="data-num">3</div><div class="data-pct">6,8%</div></div>
+      <div class="data-row"><div class="data-color c5"></div><div class="data-label">Goun / goun</div><div class="data-bar-wrap"><div class="data-bar-fill c5" style="width:6.8%"></div></div><div class="data-num">3</div><div class="data-pct">6,8%</div></div>
+      <div class="data-row"><div class="data-color c6"></div><div class="data-label">Autres (Idaasha, Losso, Lokpa, Ewe, Biali, Sahouè)</div><div class="data-bar-wrap"><div class="data-bar-fill c6" style="width:13.6%"></div></div><div class="data-num">6</div><div class="data-pct">13,6%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">La population enquêtée reflète le pluralisme ethnique de la région de Savalou. Les groupes <strong>Mahi (27,3 %)</strong> et <strong>Fon (25,0 %)</strong> dominent largement, totalisant à eux deux plus de la moitié des répondantes (52,3 %). L'ethnie Ifè représente 11,4 %, tandis que les groupes Nago et Aja/Goun complètent le tableau. Six autres ethnies minoritaires (Idaasha, Losso, Lokpa, Ewe, Biali, Sahouè) sont également représentées, attestant de la diversité de l'échantillon. 2 répondantes n'ont pas précisé leur appartenance ethnique.</div>
+  </div>
+</div>
+
+<!-- Q3 : ÂGE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 3 — Âge</div>
+    <div class="q-text">Quel est votre âge ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_age"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Distribution des âges (N = 45 réponses numériques valides)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">15 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:8.9%"></div></div><div class="data-num">4</div><div class="data-pct">8,9%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">16 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:6.7%"></div></div><div class="data-num">3</div><div class="data-pct">6,7%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">17 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:6.7%"></div></div><div class="data-num">3</div><div class="data-pct">6,7%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">18 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:11.1%"></div></div><div class="data-num">5</div><div class="data-pct">11,1%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">19–22 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:22.2%"></div></div><div class="data-num">10</div><div class="data-pct">22,2%</div></div>
+      <div class="data-row"><div class="data-color c5"></div><div class="data-label">23–26 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c5" style="width:15.6%"></div></div><div class="data-num">7</div><div class="data-pct">15,6%</div></div>
+      <div class="data-row"><div class="data-color c6"></div><div class="data-label">28–38 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c6" style="width:28.9%"></div></div><div class="data-num">13</div><div class="data-pct">28,9%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">L'échantillon couvre un large spectre d'âges allant de <strong>15 à 38 ans</strong>. L'âge le plus fréquent est <strong>28 ans (7 répondantes, soit 15,6 %)</strong>. Les 15–22 ans (adolescentes et jeunes adultes scolarisées) représentent environ 53 % de l'échantillon, ce qui donne un poids important aux perspectives des jeunes filles encore au collège ou lycée. Les femmes adultes (23 ans et plus) constituent 47 % et apportent un éclairage complémentaire sur les pratiques post-scolaires.</div>
+  </div>
+</div>
+
+<!-- Q4 : CLASSE OU PROFESSION -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 4 — Classe ou Profession</div>
+    <div class="q-text">Quelle est votre classe scolaire ou votre profession ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_classe"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Statut des répondantes (N = 30 réponses valides)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Classe de Première (lycée)</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:36.7%"></div></div><div class="data-num">11</div><div class="data-pct">36,7%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Classe de Seconde (lycée)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:16.7%"></div></div><div class="data-num">5</div><div class="data-pct">16,7%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Terminale / 3ème année</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:10%"></div></div><div class="data-num">3</div><div class="data-pct">10,0%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Licence / Enseignement supérieur</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:10%"></div></div><div class="data-num">3</div><div class="data-pct">10,0%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Professions (Couturière, Revendeuse, Coiffeuse, etc.)</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:26.7%"></div></div><div class="data-num">8</div><div class="data-pct">26,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Les élèves du lycée (Première + Seconde + Terminale) représentent <strong>63,3 %</strong> des répondantes ayant indiqué leur statut, confirmant que l'enquête cible prioritairement les jeunes scolarisées. Les étudiantes en licence (10 %) complètent le profil académique. Un quart des répondantes (26,7 %) exercent une activité professionnelle : couturière, revendeuse, coiffeuse, technicienne agricole — ce qui enrichit l'étude avec le vécu de femmes actives hors contexte scolaire. 16 répondantes n'ont pas renseigné ce champ.</div>
+  </div>
+</div>
+
+<!-- Q5 : COHABITATION -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 5</div>
+    <div class="q-text">Avec qui vivez-vous ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_vie"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Situation de cohabitation (N = 44 réponses valides)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Avec les deux parents</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:56.8%"></div></div><div class="data-num">25</div><div class="data-pct">56,8%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Avec conjoint(e)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:27.3%"></div></div><div class="data-num">12</div><div class="data-pct">27,3%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Seule</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:11.4%"></div></div><div class="data-num">5</div><div class="data-pct">11,4%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Avec tutrice / tuteur</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:4.5%"></div></div><div class="data-num">2</div><div class="data-pct">4,5%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">La majorité des répondantes (<strong>56,8 %</strong>) vit avec leurs parents, ce qui correspond au profil d'élèves encore mineures ou jeunes adultes dépendantes. Plus d'un quart (<strong>27,3 %</strong>) vit en couple, signe d'une proportion non négligeable de femmes adultes parmi les enquêtées. Seules 5 répondantes (11,4 %) vivent de façon autonome, et 2 (4,5 %) sont sous la garde d'un tuteur ou d'une tutrice. Ce contexte familial est déterminant pour comprendre l'accès aux informations et aux produits d'hygiène.</div>
+  </div>
+</div>
+
+<!-- Q6 : NIVEAU MÈRE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 6 — Niveau d'étude de la mère</div>
+    <div class="q-text">Quel est le niveau d'étude de votre mère ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_nm"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Niveau d'instruction des mères (N = 44 répondantes)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Peu instruite (aucun diplôme)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:40.9%"></div></div><div class="data-num">18</div><div class="data-pct">40,9%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Niveau primaire</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:22.7%"></div></div><div class="data-num">10</div><div class="data-pct">22,7%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Niveau secondaire</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:22.7%"></div></div><div class="data-num">10</div><div class="data-pct">22,7%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Niveau supérieur</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:13.6%"></div></div><div class="data-num">6</div><div class="data-pct">13,6%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Le niveau d'instruction des mères est globalement faible : <strong>40,9 % sont peu instruites</strong> et 22,7 % ont seulement le niveau primaire, soit un cumul de <strong>63,6 %</strong> des mères sans scolarisation formelle significative. Seulement 13,6 % ont accédé au niveau supérieur. Ce contexte explique les lacunes dans la transmission des connaissances sur l'hygiène menstruelle, puisque la mère est pourtant identifiée comme la principale source d'information par les répondantes.</div>
+  </div>
+</div>
+
+<!-- Q8 : NIVEAU PÈRE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 8 — Niveau d'étude du père</div>
+    <div class="q-text">Quel est le niveau d'étude de votre père ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_np"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Niveau d'instruction des pères (N = 42 répondantes)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Niveau supérieur</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:38.1%"></div></div><div class="data-num">16</div><div class="data-pct">38,1%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Niveau secondaire</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:21.4%"></div></div><div class="data-num">9</div><div class="data-pct">21,4%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Niveau primaire</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:16.7%"></div></div><div class="data-num">7</div><div class="data-pct">16,7%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Peu instruit</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:23.8%"></div></div><div class="data-num">10</div><div class="data-pct">23,8%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Contrairement aux mères, les pères présentent un profil d'instruction plus élevé : <strong>38,1 % ont un niveau supérieur</strong>, et 21,4 % ont le niveau secondaire, soit 59,5 % avec une scolarisation formelle. Néanmoins, 23,8 % sont peu instruits. Ce contraste entre les niveaux d'instruction des pères et des mères illustre une inégalité de genre dans l'accès à l'éducation qui perdure dans la région.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 2 : PREMIÈRES RÈGLES ET INFORMATION ===== -->
+<div class="section-title">Premières règles et accès à l'information <span>Questions 10 à 15</span></div>
+
+<!-- Q10 : DÉJÀ EU RÈGLES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 10</div>
+    <div class="q-text">Aviez-vous déjà eu vos menstrues/règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_menstrues"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Résultat (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, ont déjà eu leurs règles</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:100%"></div></div><div class="data-num">46</div><div class="data-pct">100,0%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:0%"></div></div><div class="data-num">0</div><div class="data-pct">0,0%</div></div>
+      <br>
+      <div style="background:#d5f5e3;border-radius:8px;padding:12px;font-size:0.88rem;color:#1e5631;">
+        ✅ <strong>Toutes les répondantes (100 %)</strong> ont déjà expérimenté leurs menstrues, ce qui valide la pertinence de l'ensemble des réponses sur l'hygiène menstruelle.
+      </div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">La totalité des 46 participantes a confirmé avoir déjà eu leurs règles. Cette donnée est fondamentale : elle signifie que <strong>100 % des répondantes parlent de leur vécu personnel</strong>, ce qui confère une validité maximale aux réponses portant sur les pratiques d'hygiène, les difficultés ressenties et les produits utilisés.</div>
+  </div>
+</div>
+
+<!-- Q11 : ÂGE PREMIÈRES RÈGLES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 11</div>
+    <div class="q-text">À quel âge avez-vous eu les premières règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_agereg"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Âge de la ménarche (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Après 13 ans (ménarche tardive)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:73.9%"></div></div><div class="data-num">34</div><div class="data-pct">73,9%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">À 13 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:10.9%"></div></div><div class="data-num">5</div><div class="data-pct">10,9%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">À 12 ans</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:10.9%"></div></div><div class="data-num">5</div><div class="data-pct">10,9%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">À 11 ans (ménarche précoce)</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:2.2%"></div></div><div class="data-num">1</div><div class="data-pct">2,2%</div></div>
+      <div class="data-row"><div class="data-color c5"></div><div class="data-label">À 9 ans (ménarche très précoce)</div><div class="data-bar-wrap"><div class="data-bar-fill c5" style="width:2.2%"></div></div><div class="data-num">1</div><div class="data-pct">2,2%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>73,9 % des répondantes</strong> ont eu leurs premières règles après 13 ans, ce qui correspond à la fourchette normale de la ménarche selon l'OMS (10-16 ans). 10,9 % les ont eues à 13 ans et 10,9 % à 12 ans. Deux cas extrêmes sont signalés : une ménarche à 11 ans et une ménarche très précoce à 9 ans. Ces données suggèrent que la majorité des répondantes n'ont pas bénéficié d'une préparation précoce à l'arrivée des règles, pourtant essentielle pour une gestion sereine.</div>
+  </div>
+</div>
+
+<!-- Q12 : INFORMATION AVANT RÈGLES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 12</div>
+    <div class="q-text">Aviez-vous des informations sur les menstruations avant leur survenue ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_infavant"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Information préalable (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, avaient des informations avant</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:54.3%"></div></div><div class="data-num">25</div><div class="data-pct">54,3%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, aucune information préalable</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:45.7%"></div></div><div class="data-num">21</div><div class="data-pct">45,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">La répartition est presque équilibrée mais révèle un manque flagrant : <strong>45,7 % des répondantes (21 sur 46) n'avaient aucune information</strong> sur les menstruations avant leur apparition. Cela signifie que près d'une femme sur deux a vécu la ménarche sans aucune préparation, ce qui peut générer un choc émotionnel, de la honte, ou des pratiques inadaptées. Les 54,3 % ayant reçu une information préalable doivent néanmoins être nuancées par la qualité et la fiabilité de cette information.</div>
+  </div>
+</div>
+
+<!-- Q13 : SOURCE D'INFORMATION -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 13 — Filtre : celles ayant répondu "Oui" à la Q12</div>
+    <div class="q-text">Si oui, auprès de qui avez-vous obtenu ces informations ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_source"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Sources d'information (N = 25 répondantes, plusieurs réponses possibles → 32 mentions)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Maman</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:50%"></div></div><div class="data-num">16</div><div class="data-pct">50,0%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Enseignement scolaire</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:21.9%"></div></div><div class="data-num">7</div><div class="data-pct">21,9%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Amies</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:12.5%"></div></div><div class="data-num">4</div><div class="data-pct">12,5%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Sœur</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:9.4%"></div></div><div class="data-num">3</div><div class="data-pct">9,4%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Réseaux sociaux</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:3.1%"></div></div><div class="data-num">1</div><div class="data-pct">3,1%</div></div>
+      <div class="data-row"><div class="data-color c5"></div><div class="data-label">Père</div><div class="data-bar-wrap"><div class="data-bar-fill c5" style="width:3.1%"></div></div><div class="data-num">1</div><div class="data-pct">3,1%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">La mère reste de loin la <strong>source d'information principale (50,0 %)</strong> sur les menstruations, ce qui place la transmission intergénérationnelle au cœur du dispositif éducatif informel. L'enseignement scolaire arrive en deuxième position (21,9 %), soulignant le rôle potentiellement plus fort que pourrait jouer l'école. Les amies (12,5 %) et les sœurs (9,4 %) jouent également un rôle. La faible part des réseaux sociaux (3,1 %) et du père (3,1 %) confirme que la question menstruelle reste une affaire féminine et familiale, peu abordée avec les figures masculines.</div>
+  </div>
+</div>
+
+<!-- Q14 : SATISFACTION INFORMATION -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 14</div>
+    <div class="q-text">Êtes-vous satisfaites des informations obtenues sur l'hygiène menstruelle ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_sat"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Satisfaction sur l'information reçue (N = 44 réponses valides)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, satisfaites des informations reçues</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:88.6%"></div></div><div class="data-num">39</div><div class="data-pct">88,6%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, pas satisfaites</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:11.4%"></div></div><div class="data-num">5</div><div class="data-pct">11,4%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>88,6 % des répondantes</strong> déclarent être satisfaites des informations reçues. Ce chiffre élevé doit cependant être interprété avec précaution : il peut refléter un biais de conformité sociale (difficulté à critiquer les informations familiales) ou un manque de référentiel permettant d'évaluer la qualité de l'information reçue. Les 11,4 % insatisfaites (5 personnes) ont cherché à compléter leurs connaissances via internet ou en questionnant leur entourage proche.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 3 : CONNAISSANCES MENSTRUELLES ===== -->
+<div class="section-title">Connaissances sur les menstruations <span>Questions 16 à 19</span></div>
+
+<!-- Q16 : UTILITÉ DES RÈGLES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 16</div>
+    <div class="q-text">Selon vous, à quoi servent les menstrues ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_but"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Représentation de la fonction des règles (N = 46, plusieurs réponses → 55 mentions)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Éliminer les saletés du corps par le sang menstruel</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:49.1%"></div></div><div class="data-num">27</div><div class="data-pct">49,1%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Préparer le corps pour une grossesse</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:47.3%"></div></div><div class="data-num">26</div><div class="data-pct">47,3%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Aucune idée</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:3.6%"></div></div><div class="data-num">2</div><div class="data-pct">3,6%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Les deux conceptions physiologiques des règles se partagent équitablement les réponses. La notion d'"<strong>élimination des saletés du corps</strong>" (49,1 %) est certes une représentation simplifiée, mais elle témoigne d'une compréhension intuitive de la fonction de nettoyage utérin. La "<strong>préparation à une grossesse</strong>" (47,3 %) reflète une connaissance plus proche de la réalité biologique. Seules 2 répondantes (3,6 %) n'avaient aucune représentation, ce qui est positif. Beaucoup ont coché les deux réponses, ce qui signifie une connaissance globalement correcte.</div>
+  </div>
+</div>
+
+<!-- Q17 : CONNAISSANCE CYCLE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 17</div>
+    <div class="q-text">Savez-vous ce qu'est le cycle menstruel ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_cyc"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Connaissance du cycle menstruel (N = 45 réponses valides)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, connaissent le cycle menstruel</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:68.9%"></div></div><div class="data-num">31</div><div class="data-pct">68,9%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, ne connaissent pas le cycle</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:31.1%"></div></div><div class="data-num">14</div><div class="data-pct">31,1%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>68,9 % des répondantes</strong> déclarent connaître le cycle menstruel. Bien que ce soit une majorité, <strong>31,1 % (14 femmes) ignorent ce qu'est un cycle menstruel</strong>, ce qui représente un écueil sérieux pour planifier une grossesse, comprendre son corps, ou détecter des anomalies gynécologiques. La connaissance du cycle est le fondement de toute éducation à la santé reproductive, et son absence constitue une priorité d'intervention.</div>
+  </div>
+</div>
+
+<!-- Q18 : DURÉE DU CYCLE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 18</div>
+    <div class="q-text">Selon vous, quelle est la durée d'un cycle menstruel normal ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_dur"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Perception de la durée du cycle (N = 45 réponses valides)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Entre 21 et 35 jours (durée normale)</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:71.1%"></div></div><div class="data-num">32</div><div class="data-pct">71,1%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Aucune idée de la durée</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:15.6%"></div></div><div class="data-num">7</div><div class="data-pct">15,6%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Moins de 21 jours (sous-estimation)</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:13.3%"></div></div><div class="data-num">6</div><div class="data-pct">13,3%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>71,1 %</strong> des répondantes connaissent la durée normale d'un cycle menstruel (21 à 35 jours), ce qui est rassurant. Cependant, <strong>15,6 % n'ont aucune idée</strong> de la durée et 13,3 % sous-estiment le cycle (moins de 21 jours), soit au total <strong>28,9 % des femmes avec une connaissance incorrecte ou absente</strong>. Cette méconnaissance empêche la détection de cycles anormaux (oligoménorrhée, polyménorrhée) et rend la contraception naturelle plus risquée.</div>
+  </div>
+</div>
+
+<!-- Q19 : CONNAISSANCE PRODUITS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 19</div>
+    <div class="q-text">Connaissez-vous des produits d'hygiène menstruelle ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_prod"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Connaissance des produits d'hygiène (N = 43 réponses valides)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, connaissent des produits d'hygiène</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:93%"></div></div><div class="data-num">40</div><div class="data-pct">93,0%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, ne connaissent aucun produit</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:7%"></div></div><div class="data-num">3</div><div class="data-pct">7,0%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>93,0 % des répondantes</strong> connaissent au moins un produit d'hygiène menstruelle. Cette connaissance est donc largement répandue dans l'échantillon. Les 3 répondantes (7,0 %) qui ignorent l'existence de produits dédiés ont probablement recours à des solutions de fortune (tissu, papier). La connaissance des produits ne signifie cependant pas leur utilisation, comme le montrent les réponses à la question suivante.</div>
+  </div>
+</div>
+
+<!-- Q20 : PRODUITS CONNUS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 20 — Filtre : celles ayant répondu "Oui" à la Q19</div>
+    <div class="q-text">Si oui, précisez le ou lesquels (produits connus)</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_pprec"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Produits cités (N = 40 répondantes, plusieurs réponses → 103 mentions totales)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Serviettes hygiéniques jetables</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:87.5%"></div></div><div class="data-num">36</div><div class="data-pct">87,5% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Serviettes hygiéniques lavables</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:60%"></div></div><div class="data-num">24</div><div class="data-pct">60,0% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Tissu menstruel (traditionnel)</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:60%"></div></div><div class="data-num">24</div><div class="data-pct">60,0% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Culotte menstruelle</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:30%"></div></div><div class="data-num">12</div><div class="data-pct">30,0% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Tampons</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:17.5%"></div></div><div class="data-num">7</div><div class="data-pct">17,5% des répondantes</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Les <strong>serviettes hygiéniques jetables</strong> sont connues par 87,5 % des répondantes, confirmant leur visibilité dans le marché local. Les <strong>serviettes lavables</strong> et le <strong>tissu menstruel</strong> arrivent ex aequo à 60,0 %, reflétant l'ancrage des solutions réutilisables dans le contexte culturel et économique. La <strong>culotte menstruelle</strong>, produit plus moderne, est connue de 30 % des répondantes, ce qui est notable. Les <strong>tampons</strong>, culturellement moins acceptés dans ce contexte, ne sont cités que par 17,5 % des répondantes.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 4 : PRATIQUES D'HYGIÈNE ===== -->
+<div class="section-title">Pratiques d'hygiène pendant les règles <span>Questions 21 à 30</span></div>
+
+<!-- Q21 : PRODUITS UTILISÉS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 21</div>
+    <div class="q-text">Quels types de produits utilisez-vous pendant vos règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_util"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Produits réellement utilisés (N = 46, plusieurs réponses → 57 mentions)</div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Tissu menstruel (traditionnel)</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:52.2%"></div></div><div class="data-num">24</div><div class="data-pct">52,2%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Serviettes hygiéniques jetables</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:50%"></div></div><div class="data-num">23</div><div class="data-pct">50,0%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Serviettes hygiéniques lavables</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:21.7%"></div></div><div class="data-num">10</div><div class="data-pct">21,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Un résultat majeur : malgré la prédominance des serviettes jetables dans les connaissances (Q20), c'est le <strong>tissu menstruel traditionnel qui est le plus utilisé (52,2 %)</strong>, à égalité quasi parfaite avec les serviettes jetables (50,0 %). Ce paradoxe révèle que la <strong>contrainte économique</strong> ou les habitudes culturelles poussent plus de la moitié des répondantes à utiliser du tissu, solution moins hygiénique et moins efficace. Les serviettes lavables sont utilisées par 21,7 %. Plusieurs femmes utilisent plusieurs types de produits selon leur disponibilité.</div>
+  </div>
+</div>
+
+<!-- Q22 : FRÉQUENCE CHANGEMENT -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 22</div>
+    <div class="q-text">Combien de fois changez-vous de protection hygiénique par jour pendant vos menstrues à l'école ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_freq"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Fréquence de changement de protection (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">3 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:73.9%"></div></div><div class="data-num">34</div><div class="data-pct">73,9%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">2 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:19.6%"></div></div><div class="data-num">9</div><div class="data-pct">19,6%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">4 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:4.3%"></div></div><div class="data-num">2</div><div class="data-pct">4,3%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Jamais (ne se change pas à l'école)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:2.2%"></div></div><div class="data-num">1</div><div class="data-pct">2,2%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>73,9 % des répondantes</strong> changent leur protection 3 fois par jour à l'école, ce qui est conforme aux recommandations hygiéniques (toutes les 4 à 6 heures). 19,6 % ne le font que 2 fois par jour, ce qui peut être insuffisant selon l'abondance du flux. Une répondante (2,2 %) déclare ne jamais se changer à l'école, ce qui constitue un risque infectieux. Ces données soulignent l'importance de l'accès à des toilettes fonctionnelles et à un espace privé à l'école.</div>
+  </div>
+</div>
+
+<!-- Q23 : MANQUE D'ARGENT -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 23</div>
+    <div class="q-text">Manquez-vous de l'argent pour acheter des protections ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_arg"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Contrainte financière pour l'accès aux protections (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Jamais de manque d'argent</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:60.9%"></div></div><div class="data-num">28</div><div class="data-pct">60,9%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Parfois manque d'argent</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:28.3%"></div></div><div class="data-num">13</div><div class="data-pct">28,3%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Souvent manque d'argent</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:10.9%"></div></div><div class="data-num">5</div><div class="data-pct">10,9%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Bien que <strong>60,9 % des répondantes</strong> déclarent ne jamais manquer d'argent pour leurs protections, <strong>39,1 % font face à une contrainte financière</strong> — dont 28,3 % parfois et 10,9 % souvent. Ce chiffre est cohérent avec l'usage élevé du tissu menstruel (52,2 % à la Q21). La précarité menstruelle est une réalité pour plus d'un tiers des répondantes et conduit à des pratiques compensatoires moins hygiéniques. Des programmes de distribution gratuite de serviettes s'avèrent donc nécessaires.</div>
+  </div>
+</div>
+
+<!-- Q24 : GÊNE À DEMANDER -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 24</div>
+    <div class="q-text">Vous sentez-vous gênée de demander des serviettes hygiéniques ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_gene"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Sentiment de gêne à demander des protections (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Jamais gênée</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:37%"></div></div><div class="data-num">17</div><div class="data-pct">37,0%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Parfois gênée</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:26.1%"></div></div><div class="data-num">12</div><div class="data-pct">26,1%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Toujours gênée</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:19.6%"></div></div><div class="data-num">9</div><div class="data-pct">19,6%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Souvent gênée</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:15.2%"></div></div><div class="data-num">7</div><div class="data-pct">15,2%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Rarement gênée</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:2.2%"></div></div><div class="data-num">1</div><div class="data-pct">2,2%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Seules <strong>37,0 % des répondantes</strong> ne ressentent jamais de gêne. En revanche, <strong>63,0 % éprouvent un sentiment de gêne</strong> à un degré variable (parfois 26,1 %, souvent 15,2 %, toujours 19,6 %). Ce résultat révèle la persistance d'un tabou social autour des règles : même quand on en a besoin, demander des protections reste difficile pour la majorité. Ce tabou est un frein direct à l'accès aux soins hygiéniques et doit être adressé dans tout programme d'éducation.</div>
+  </div>
+</div>
+
+<!-- Q25 : TOILETTE INTIME -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 25</div>
+    <div class="q-text">Faites-vous une toilette intime pendant vos règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_toi"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Pratique de la toilette intime (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, pratiquent la toilette intime</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:100%"></div></div><div class="data-num">46</div><div class="data-pct">100,0%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:0%"></div></div><div class="data-num">0</div><div class="data-pct">0,0%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>100 % des répondantes</strong> déclarent effectuer une toilette intime pendant leurs règles. C'est un résultat très positif qui indique que cette pratique est universellement adoptée dans l'échantillon. Cependant, il convient d'analyser la fréquence et les produits utilisés pour cette toilette, car les bonnes pratiques varient (fréquence recommandée, produits adaptés, risque de surlavage).</div>
+  </div>
+</div>
+
+<!-- Q26 : FRÉQUENCE TOILETTE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 26 — Filtre : celles ayant répondu "Oui" à la Q25</div>
+    <div class="q-text">Si oui, combien de fois par jour effectuez-vous la toilette intime ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_fto"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Fréquence de la toilette intime par jour (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">3 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:78.3%"></div></div><div class="data-num">36</div><div class="data-pct">78,3%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">2 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:15.2%"></div></div><div class="data-num">7</div><div class="data-pct">15,2%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">4 fois par jour ou plus</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:4.3%"></div></div><div class="data-num">2</div><div class="data-pct">4,3%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Plusieurs fois (fréquence non précisée)</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:2.2%"></div></div><div class="data-num">1</div><div class="data-pct">2,2%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>78,3 %</strong> des répondantes effectuent la toilette intime 3 fois par jour, ce qui est une bonne pratique. 15,2 % la font 2 fois par jour (acceptable), et 4,3 % plus de 4 fois. Il est important de noter qu'une hygiène intime excessive (plus de 3 fois par jour avec savon) peut altérer la flore vaginale naturelle et augmenter le risque d'infections. L'éducation sur la <em>juste</em> fréquence et les produits adaptés est donc aussi nécessaire.</div>
+  </div>
+</div>
+
+<!-- Q27 : PRODUIT TOILETTE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 27</div>
+    <div class="q-text">Avec quoi faites-vous la toilette intime ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_ato"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Produit utilisé pour la toilette intime (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Eau simple seulement</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:50%"></div></div><div class="data-num">23</div><div class="data-pct">50,0%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Eau et savon</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:45.7%"></div></div><div class="data-num">21</div><div class="data-pct">45,7%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Eau tiède / Eau tiède simple</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:4.3%"></div></div><div class="data-num">2</div><div class="data-pct">4,3%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Les recommandations médicales préconisent l'eau simple ou un gel doux spécifique pour la toilette intime. À ce titre, les <strong>50,0 %</strong> qui utilisent uniquement de l'eau simple adoptent la pratique la plus recommandée. Cependant, les <strong>45,7 %</strong> qui utilisent de l'eau et du savon ordinaire risquent d'altérer l'équilibre du microbiome vaginal et d'augmenter les risques de mycoses ou d'infections. L'usage de savon ordinaire à l'intérieur des organes génitaux est déconseillé et devrait être abordé en séance d'éducation.</div>
+  </div>
+</div>
+
+<!-- Q29 : DOUCHES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 29</div>
+    <div class="q-text">Prenez-vous des douches pendant vos règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_dou"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Pratique de la douche pendant les règles (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, prennent des douches</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:97.8%"></div></div><div class="data-num">45</div><div class="data-pct">97,8%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, ne prennent pas de douche</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:2.2%"></div></div><div class="data-num">1</div><div class="data-pct">2,2%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>97,8 % des répondantes</strong> prennent des douches pendant leurs règles. La très grande majorité ne renonce donc pas à l'hygiène corporelle globale durant cette période, contrairement à certaines croyances traditionnelles qui déconseillent de se baigner pendant les menstrues. Une seule répondante (2,2 %) ne se douche pas. Ce résultat positif reflète une bonne intégration des pratiques d'hygiène de base.</div>
+  </div>
+</div>
+
+<!-- Q30 : FRÉQUENCE DOUCHE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 30 — Filtre : celles ayant répondu "Oui" à la Q29</div>
+    <div class="q-text">Si oui, combien de fois par jour prenez-vous une douche ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_fdo"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Fréquence des douches par jour (N = 45 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">3 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:75.6%"></div></div><div class="data-num">34</div><div class="data-pct">75,6%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">2 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:22.2%"></div></div><div class="data-num">10</div><div class="data-pct">22,2%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">4 fois par jour</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:2.2%"></div></div><div class="data-num">1</div><div class="data-pct">2,2%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>75,6 %</strong> se douchent 3 fois par jour et 22,2 % deux fois par jour. Ces fréquences sont comparables à celles de la toilette intime, suggérant une hygiène corporelle globalement rigoureuse. La cohérence entre fréquence de douche et de toilette intime (3x/jour dans les deux cas) indique des habitudes d'hygiène bien ancrées dans la routine quotidienne de ces femmes.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 5 : VIE SCOLAIRE ET RÈGLES ===== -->
+<div class="section-title">Gestion des règles à l'école et sources d'apprentissage <span>Questions 31 à 32</span></div>
+
+<!-- Q32 : QUI A APPRIS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 32</div>
+    <div class="q-text">Qui vous a appris l'hygiène à observer pendant les menstrues ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_qui"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Source d'apprentissage de l'hygiène menstruelle (N = 46, plusieurs réponses → 48 mentions)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">La maman</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:72.9%"></div></div><div class="data-num">35</div><div class="data-pct">72,9%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Une sœur</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:8.3%"></div></div><div class="data-num">4</div><div class="data-pct">8,3%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Réseaux sociaux</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:6.3%"></div></div><div class="data-num">3</div><div class="data-pct">6,3%</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Amies</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:6.3%"></div></div><div class="data-num">3</div><div class="data-pct">6,3%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Tante</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:2.1%"></div></div><div class="data-num">1</div><div class="data-pct">2,1%</div></div>
+      <div class="data-row"><div class="data-color c5"></div><div class="data-label">Enseignante</div><div class="data-bar-wrap"><div class="data-bar-fill c5" style="width:2.1%"></div></div><div class="data-num">1</div><div class="data-pct">2,1%</div></div>
+      <div class="data-row"><div class="data-color c6"></div><div class="data-label">Elle-même (autodidacte)</div><div class="data-bar-wrap"><div class="data-bar-fill c6" style="width:2.1%"></div></div><div class="data-num">1</div><div class="data-pct">2,1%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Ce graphique met en lumière une réalité frappante : <strong>la mère est la source quasi exclusive de l'éducation menstruelle (72,9 %)</strong>. L'institution scolaire, via les enseignantes, ne contribue qu'à hauteur de 2,1 %. Les réseaux sociaux (6,3 %) commencent à jouer un rôle, mais restent marginaux. Cette hyper-dépendance de la transmission maternelle représente à la fois une force (confiance, accessibilité) et une faiblesse : si la mère est peu instruite ou a elle-même de fausses croyances, ces lacunes se transmettent. L'école est clairement sous-utilisée comme vecteur d'éducation menstruelle.</div>
+  </div>
+</div>
+
+<!-- Q33 : PROBLÈMES RENCONTRÉS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 33</div>
+    <div class="q-text">Quels sont les problèmes liés aux menstruations que vous rencontrez ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_prob"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Problèmes déclarés (N = 46, plusieurs réponses → 64 mentions)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Peur de fuite sur l'uniforme / les habits</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:53%"></div></div><div class="data-num">34</div><div class="data-pct">73,9% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c4"></div><div class="data-label">Moqueries des camarades de classe</div><div class="data-bar-wrap"><div class="data-bar-fill c4" style="width:18.8%"></div></div><div class="data-num">12</div><div class="data-pct">26,1% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Distance école–maison pour se changer</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:10.9%"></div></div><div class="data-num">7</div><div class="data-pct">15,2% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label" style="opacity:0.6">Douleurs (douleur pelvienne, dysménorrhée)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:7.8%;opacity:0.6"></div></div><div class="data-num">5</div><div class="data-pct">10,9% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Coût des protections</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:6.3%"></div></div><div class="data-num">4</div><div class="data-pct">8,7% des répondantes</div></div>
+      <div class="data-row"><div class="data-color c6"></div><div class="data-label">Autres (regard des autres, etc.)</div><div class="data-bar-wrap"><div class="data-bar-fill c6" style="width:3.1%"></div></div><div class="data-num">2</div><div class="data-pct">4,3% des répondantes</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Le problème dominant est sans ambiguïté : <strong>73,9 % des répondantes ont peur d'une fuite sur leur uniforme ou leurs habits</strong>. Cette anxiété sociale est le principal facteur de stress et peut entraîner absentéisme scolaire ou diminution de la concentration. Les <strong>moqueries des camarades (26,1 %)</strong> renforcent ce climat d'humiliation. La <strong>distance domicile-école (15,2 %)</strong> est une contrainte logistique réelle. Le coût des protections (8,7 %) et les douleurs (10,9 %) complètent ce tableau de difficultés multidimensionnelles.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 6 : FORMATION ET SENSIBILISATION ===== -->
+<div class="section-title">Volonté de formation et préférences thématiques <span>Questions 34 à 36</span></div>
+
+<!-- Q34 : PARTICIPATION SÉANCE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 34</div>
+    <div class="q-text">Accepteriez-vous de participer à une séance d'information et d'éducation sur l'hygiène menstruelle / santé reproductive ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_acc"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Volonté de participation à une séance d'éducation (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, acceptent de participer</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:95.7%"></div></div><div class="data-num">44</div><div class="data-pct">95,7%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, refusent de participer</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:4.3%"></div></div><div class="data-num">2</div><div class="data-pct">4,3%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Un résultat remarquable : <strong>95,7 % des répondantes (44 sur 46) acceptent de participer</strong> à une séance d'éducation sur l'hygiène menstruelle. Les 2 refus (4,3 %) sont motivés par le fait d'avoir déjà participé à des formations antérieures et de se considérer suffisamment informées. Ce taux d'adhésion exceptionnellement élevé constitue un indicateur très positif pour la faisabilité et l'acceptabilité sociale d'interventions éducatives futures dans la zone de Savalou.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 7 : SANTÉ ET DOULEURS ===== -->
+<div class="section-title">Santé, symptômes et gestion de la douleur <span>Questions 37 à 40</span></div>
+
+<!-- Q37 : DÉMANGEAISONS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 37</div>
+    <div class="q-text">Avez-vous des démangeaisons ou brûlures mictionnelles pendant vos règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_dem"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Présence de démangeaisons / brûlures (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Non, pas de démangeaisons</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:80.4%"></div></div><div class="data-num">37</div><div class="data-pct">80,4%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Oui, ont des démangeaisons / brûlures</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:19.6%"></div></div><div class="data-num">9</div><div class="data-pct">19,6%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>19,6 % des répondantes (9 femmes)</strong> souffrent de démangeaisons ou brûlures mictionnelles pendant leurs règles. Ces symptômes peuvent signaler une infection vaginale, une candidose, une vaginose bactérienne, ou une réaction à un produit d'hygiène inadapté (savon ordinaire). Parmi celles qui précisent la cause : 6 pensent à une infection, 2 estiment que c'est normal (croyance erronée), 2 ne savent pas — signe d'un manque de connaissances médicales qui mérite d'être adressé.</div>
+  </div>
+</div>
+
+<!-- Q38 : PRÉCISION DÉMANGEAISONS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 38 — Filtre : celles ayant répondu "Oui" à la Q37</div>
+    <div class="q-text">Si oui, préciser la nature des démangeaisons / brûlures</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_pdem"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Nature perçue des symptômes (N = 9 répondantes concernées, 12 mentions)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">C'est une infection (perception)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:50%"></div></div><div class="data-num">6</div><div class="data-pct">50,0%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Honte de se gratter devant les camarades</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:16.7%"></div></div><div class="data-num">2</div><div class="data-pct">16,7%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">C'est normal (perception erronée)</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:16.7%"></div></div><div class="data-num">2</div><div class="data-pct">16,7%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Je ne sais pas</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:16.7%"></div></div><div class="data-num">2</div><div class="data-pct">16,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Parmi les 9 répondantes présentant des symptômes de démangeaisons, <strong>50,0 % pensent qu'il s'agit d'une infection</strong> mais ne semblent pas avoir consulté un professionnel de santé. Plus préoccupant : <strong>2 répondantes (16,7 %) considèrent ces démangeaisons comme normales</strong>, banalisant ainsi un symptôme qui devrait être pris en charge médicalement. Les 2 qui ont honte de se gratter en public (16,7 %) révèlent la dimension sociale de la souffrance. Ces résultats soulignent le besoin d'éducation sur les signaux d'alerte gynécologiques.</div>
+  </div>
+  <div class="note-band">⚠️ Cette question s'applique uniquement aux 9 répondantes (19,6 %) ayant déclaré des démangeaisons à la question 37.</div>
+</div>
+
+<!-- Q39 : DOULEURS BAS VENTRE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 39</div>
+    <div class="q-text">Ressentez-vous des douleurs au bas ventre pendant vos règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_ventre"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Présence de douleurs pelviennes / dysménorrhée (N = 46 répondantes)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Oui, souffrent de douleurs (dysménorrhée)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:80.4%"></div></div><div class="data-num">37</div><div class="data-pct">80,4%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Non, pas de douleurs</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:19.6%"></div></div><div class="data-num">9</div><div class="data-pct">19,6%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">C'est l'un des résultats les plus frappants de l'enquête : <strong>80,4 % des répondantes (37 sur 46) souffrent de douleurs au bas ventre</strong> pendant leurs règles — c'est la définition de la dysménorrhée. Cette prévalence très élevée (plus de 4 femmes sur 5) constitue un enjeu majeur de santé publique. La dysménorrhée est l'une des premières causes d'absentéisme scolaire chez les adolescentes. Seules 9 répondantes (19,6 %) sont épargnées par ce symptôme.</div>
+  </div>
+</div>
+
+<!-- Q40 : GESTION DOULEURS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 40 — Filtre : celles ayant répondu "Oui" à la Q39</div>
+    <div class="q-text">Comment gérez-vous ces douleurs pendant les règles ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_gdo"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Mode de gestion de la dysménorrhée (N = 37 répondantes concernées, 41 mentions)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Prise de calmants (antalgiques, Ibuprofène…)</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:48.8%"></div></div><div class="data-num">20</div><div class="data-pct">48,8%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Elle supporte sans traitement</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:43.9%"></div></div><div class="data-num">18</div><div class="data-pct">43,9%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Remèdes traditionnels (tisane, clou de girofle + sodabi, compresses chaudes)</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:7.3%"></div></div><div class="data-num">3</div><div class="data-pct">7,3%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Face à la dysménorrhée, les réponses se partagent quasi équitablement entre <strong>prise de calmants (48,8 %)</strong> et <strong>endurance silencieuse (43,9 %)</strong>. Le fait que près de la moitié des femmes "supportent" sans traitement suggère soit un accès limité aux médicaments, soit une résignation face à la douleur considérée comme inévitable. Les remèdes traditionnels (tisane, clou de girofle + sodabi, compresses chaudes) sont utilisés par 3 répondantes (7,3 %). Ces données plaident pour une éducation sur la prise en charge adéquate de la dysménorrhée et l'accès aux antalgiques.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 8 : INFRASTRUCTURES SCOLAIRES ===== -->
+<div class="section-title">Infrastructures scolaires et services disponibles <span>Questions 41 à 48</span></div>
+
+<!-- Q41 : INFIRMERIE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 41</div>
+    <div class="q-text">Existe-t-il une infirmerie au sein du collège ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_infi"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Présence d'une infirmerie scolaire (N = 13 répondantes ayant répondu)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, pas d'infirmerie</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:92.3%"></div></div><div class="data-num">12</div><div class="data-pct">92,3%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, il y a une infirmerie</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:7.7%"></div></div><div class="data-num">1</div><div class="data-pct">7,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Parmi les 13 élèves scolarisées ayant répondu à cette question, <strong>92,3 % indiquent qu'il n'existe pas d'infirmerie</strong> dans leur établissement. Une seule élève (7,7 %) bénéficie de cet équipement. L'absence quasi totale d'infirmerie est un obstacle majeur : sans ce service, les élèves souffrant de dysménorrhée ou confrontées à une urgence hygiénique n'ont aucun recours institutionnel. Ce déficit structurel doit être comblé en priorité.</div>
+  </div>
+  <div class="note-band">⚠️ Question applicable aux seules élèves scolarisées dans un collège. 33 répondantes adultes ou hors collège n'ont pas répondu à cette question.</div>
+</div>
+
+<!-- Q42 : INFIRMERIE FONCTIONNELLE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 42</div>
+    <div class="q-text">L'infirmerie est-elle fonctionnelle ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_fonc"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Fonctionnalité de l'infirmerie (N = 13 répondantes)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, l'infirmerie n'est pas fonctionnelle</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:92.3%"></div></div><div class="data-num">12</div><div class="data-pct">92,3%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, infirmerie fonctionnelle</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:7.7%"></div></div><div class="data-num">1</div><div class="data-pct">7,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Les résultats de cette question confirment et aggravent ceux de la précédente : même parmi les rares cas où une infirmerie existe, elle n'est pas systématiquement opérationnelle. <strong>92,3 % des répondantes n'ont accès à aucune infirmerie fonctionnelle</strong>. La seule élève ayant indiqué l'existence d'une infirmerie (Q41) est aussi la seule à confirmer qu'elle est fonctionnelle. C'est un constat alarmant sur l'état des infrastructures sanitaires scolaires dans la zone de Savalou.</div>
+  </div>
+</div>
+
+<!-- Q43 : CALMANTS À L'ÉCOLE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 43</div>
+    <div class="q-text">Avez-vous déjà reçu une fois des calmants pendant vos règles (à l'école) ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_calm"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Réception de calmants à l'école (N = 13 répondantes scolarisées)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, n'ont jamais reçu de calmants</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:69.2%"></div></div><div class="data-num">9</div><div class="data-pct">69,2%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, ont reçu des calmants</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:30.8%"></div></div><div class="data-num">4</div><div class="data-pct">30,8%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>69,2 % des élèves (9 sur 13)</strong> n'ont jamais reçu de calmants à l'école pour gérer leurs douleurs menstruelles, malgré la prévalence très élevée de la dysménorrhée (80,4 % à la Q39). Les 4 élèves (30,8 %) qui en ont reçu le doivent probablement à des initiatives individuelles (enseignants, personnel administratif) plutôt qu'à un dispositif institutionnel. L'absence d'un protocole de prise en charge de la douleur à l'école est une lacune grave au regard de l'impact de la dysménorrhée sur la fréquentation scolaire.</div>
+  </div>
+</div>
+
+<!-- Q44 : ÉDUCATION REÇUE À L'ÉCOLE -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 44</div>
+    <div class="q-text">Avez-vous reçu une éducation sur l'hygiène menstruelle à l'école ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_edu"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Réception d'une éducation scolaire menstruelle (N = 13 répondantes scolarisées)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, ont reçu une éducation à l'école</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:92.3%"></div></div><div class="data-num">12</div><div class="data-pct">92,3%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, aucune éducation reçue</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:7.7%"></div></div><div class="data-num">1</div><div class="data-pct">7,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Résultat encourageant : <strong>92,3 % des élèves scolarisées (12 sur 13)</strong> déclarent avoir reçu une forme d'éducation sur l'hygiène menstruelle à l'école. Ce chiffre est positif et contraste avec le faible rôle de l'école comme source d'information principale (Q32 et Q13). Cela suggère que les enseignements existent mais n'ont pas laissé une empreinte suffisamment forte pour être spontanément cités comme source première d'apprentissage. La qualité, la profondeur et la régularité de ces séances méritent donc d'être améliorées.</div>
+  </div>
+</div>
+
+<!-- Q45 : TOILETTES FILLES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 45</div>
+    <div class="q-text">Existe-t-il des toilettes pour filles au sein du collège ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_toif"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Présence de toilettes dédiées aux filles (N = 13 répondantes scolarisées)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, il y a des toilettes pour filles</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:76.9%"></div></div><div class="data-num">10</div><div class="data-pct">76,9%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, pas de toilettes dédiées</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:23.1%"></div></div><div class="data-num">3</div><div class="data-pct">23,1%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>76,9 % des élèves</strong> confirment la présence de toilettes dédiées aux filles dans leur établissement. Cependant, <strong>23,1 % (3 élèves) n'en disposent pas</strong>, ce qui représente une violation des droits fondamentaux à la dignité et à la santé. L'absence de sanitaires genrés oblige les filles à se retenir, à éviter de se changer ou à quitter l'école pendant leurs règles, aggravant ainsi l'absentéisme scolaire.</div>
+  </div>
+</div>
+
+<!-- Q46 : INTIMITÉ TOILETTES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 46</div>
+    <div class="q-text">Pouvez-vous fermer à l'intérieur les toilettes et vous changer en toute intimité ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_int"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Intimité et sécurité dans les toilettes scolaires (N = 13 répondantes scolarisées)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, ne peuvent pas s'enfermer en privé</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:61.5%"></div></div><div class="data-num">8</div><div class="data-pct">61,5%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, peuvent se changer en toute intimité</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:38.5%"></div></div><div class="data-num">5</div><div class="data-pct">38,5%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Malgré l'existence de toilettes pour filles dans 76,9 % des établissements, <strong>61,5 % des élèves (8 sur 13) ne peuvent pas s'y changer en toute intimité</strong> — les portes ne ferment pas ou les espaces sont inadaptés. Cela signifie que même là où des toilettes existent, elles ne sont pas fonctionnellement adaptées à la gestion menstruelle. Ce problème de confort et de sécurité explique en partie pourquoi certaines élèves préfèrent rentrer chez elles ou se retenir plutôt que d'utiliser les sanitaires de l'école.</div>
+  </div>
+</div>
+
+<!-- Q47 : ÉLIMINATION DES PROTECTIONS -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 47</div>
+    <div class="q-text">Où jetez-vous vos protections usagées ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_jet"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Mode d'élimination des protections usagées (N = 10 répondantes ayant précisé)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Enterrées ou brûlées</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:80%"></div></div><div class="data-num">8</div><div class="data-pct">80,0%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Emballées dans un sachet noir et jetées dans une poubelle à l'école</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:10%"></div></div><div class="data-num">1</div><div class="data-pct">10,0%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Emballées dans un sachet noir et jetées dans une poubelle à la maison</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:10%"></div></div><div class="data-num">1</div><div class="data-pct">10,0%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>80,0 % des répondantes</strong> enterrent ou brûlent leurs protections usagées. Cette pratique est courante dans les contextes ruraux où les systèmes de collecte de déchets sont absents, mais elle présente des risques environnementaux (brûlage de plastiques) et hygiéniques. Seules 2 répondantes (20,0 %) adoptent la pratique recommandée (emballer dans un sachet noir avant de jeter). L'éducation sur la gestion des déchets menstruels doit être intégrée dans les programmes d'hygiène.</div>
+  </div>
+  <div class="note-band">⚠️ Seulement 10 des 46 répondantes ont renseigné cette question — les autres n'avaient probablement pas accès à des poubelles ou ne souhaitaient pas préciser.</div>
+</div>
+
+<!-- Q48 : SERVIETTES REÇUES GRATUITEMENT -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 48</div>
+    <div class="q-text">Avez-vous reçu gratuitement des serviettes hygiéniques ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_grat"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Réception de serviettes hygiéniques gratuites (N = 13 répondantes scolarisées)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, en ont reçu gratuitement</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:53.8%"></div></div><div class="data-num">7</div><div class="data-pct">53,8%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, n'en ont jamais reçu</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:46.2%"></div></div><div class="data-num">6</div><div class="data-pct">46,2%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">La répartition est presque équilibrée : <strong>53,8 %</strong> ont bénéficié de serviettes hygiéniques gratuites et <strong>46,2 % n'en ont jamais reçu</strong>. Les distributions gratuites proviennent principalement d'ONG (5 cas), de l'école elle-même (1 cas) et de la Fondation Claudine Talon (1 cas). Ce résultat confirme que des initiatives existent mais ne couvrent pas encore l'ensemble des besoins. La moitié des élèves restant sans accès à des protections gratuites est une cible prioritaire pour les programmes d'aide.</div>
+  </div>
+</div>
+
+<!-- Q49 : QUI A DONNÉ -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 49 — Filtre : celles ayant répondu "Oui" à la Q48</div>
+    <div class="q-text">Si oui, qui vous les avait données ?</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_qdon"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Source des serviettes gratuites reçues (N = 7 répondantes bénéficiaires)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">ONG (Organisations Non Gouvernementales)</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:71.4%"></div></div><div class="data-num">5</div><div class="data-pct">71,4%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">L'école (établissement scolaire)</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:14.3%"></div></div><div class="data-num">1</div><div class="data-pct">14,3%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Fondation Claudine Talon</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:14.3%"></div></div><div class="data-num">1</div><div class="data-pct">14,3%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Parmi les 7 bénéficiaires de serviettes gratuites, <strong>les ONG sont les principales pourvoyeuses (71,4 %)</strong>. L'école contribue à hauteur de 14,3 %, tout comme la Fondation Claudine Talon (14,3 %). Ces données montrent que les initiatives de distribution reposent essentiellement sur la société civile et les fondations philanthropiques, plutôt que sur des politiques publiques institutionnalisées. L'implication de l'État béninois et des collectivités locales dans ces programmes est encore insuffisante.</div>
+  </div>
+</div>
+
+<!-- ===== SECTION 9 : PROFIL SOCIO-ÉCONOMIQUE DES PARENTS ===== -->
+<div class="section-title">Profil socio-économique du ménage <span>Questions 50 à 55</span></div>
+
+<!-- Q53 : NIVEAU INSTRUCTION PÈRE (déclaratif) -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 53</div>
+    <div class="q-text">Niveau d'instruction du père (déclaré par la répondante)</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_ip"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Niveau d'instruction du père (N = 13 répondantes)</div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Niveau supérieur</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:53.8%"></div></div><div class="data-num">7</div><div class="data-pct">53,8%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Niveau secondaire</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:15.4%"></div></div><div class="data-num">2</div><div class="data-pct">15,4%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Niveau primaire</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:23.1%"></div></div><div class="data-num">3</div><div class="data-pct">23,1%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non instruit</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:7.7%"></div></div><div class="data-num">1</div><div class="data-pct">7,7%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Parmi les 13 répondantes ayant renseigné ce champ, plus de la moitié (53,8 %) ont un père de niveau supérieur. Cela reflète une légère surreprésentation des ménages instruits parmi ceux qui ont répondu aux questions socio-économiques détaillées. Le niveau d'instruction du père influe directement sur les ressources financières disponibles pour l'achat de protections hygiéniques.</div>
+  </div>
+  <div class="note-band">⚠️ Seulement 13 répondantes sur 46 ont complété cette section sur le profil socio-économique — cette sous-section concerne surtout les élèves encore scolarisées.</div>
+</div>
+
+<!-- Q54 : NIVEAU INSTRUCTION MÈRE (déclaratif) -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 54</div>
+    <div class="q-text">Niveau d'instruction de la mère (déclaré par la répondante)</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_im"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Niveau d'instruction de la mère (N = 13 répondantes)</div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non instruite</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:30.8%"></div></div><div class="data-num">4</div><div class="data-pct">30,8%</div></div>
+      <div class="data-row"><div class="data-color c3"></div><div class="data-label">Niveau primaire</div><div class="data-bar-wrap"><div class="data-bar-fill c3" style="width:30.8%"></div></div><div class="data-num">4</div><div class="data-pct">30,8%</div></div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Niveau secondaire</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:23.1%"></div></div><div class="data-num">3</div><div class="data-pct">23,1%</div></div>
+      <div class="data-row"><div class="data-color c0"></div><div class="data-label">Niveau supérieur</div><div class="data-bar-wrap"><div class="data-bar-fill c0" style="width:15.4%"></div></div><div class="data-num">2</div><div class="data-pct">15,4%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text">Parmi les 13 répondantes ayant renseigné ce champ, <strong>61,5 % ont une mère sans instruction ou avec seulement le niveau primaire</strong> (non instruite 30,8 % + primaire 30,8 %). Seulement 15,4 % ont une mère de niveau supérieur. Ces chiffres confirment l'inégalité genrée dans l'accès à l'éducation formelle et son impact direct sur la qualité de la transmission des pratiques d'hygiène menstruelle.</div>
+  </div>
+</div>
+
+<!-- Q56 : DISPONIBILITÉ RESSOURCES -->
+<div class="chart-card">
+  <div class="chart-card-header">
+    <div class="q-number">Question 56</div>
+    <div class="q-text">Disponibilité régulière de ressources financières pour l'achat de serviettes</div>
+  </div>
+  <div class="chart-card-body">
+    <div class="chart-panel"><canvas id="c_dispo"></canvas></div>
+    <div class="data-panel">
+      <div class="data-title">Accès financier régulier aux protections (N = 11 répondantes ayant précisé)</div>
+      <div class="data-row"><div class="data-color c2"></div><div class="data-label">Oui, ressources régulièrement disponibles</div><div class="data-bar-wrap"><div class="data-bar-fill c2" style="width:63.6%"></div></div><div class="data-num">7</div><div class="data-pct">63,6%</div></div>
+      <div class="data-row"><div class="data-color c1"></div><div class="data-label">Non, ressources insuffisantes ou irrégulières</div><div class="data-bar-wrap"><div class="data-bar-fill c1" style="width:36.4%"></div></div><div class="data-num">4</div><div class="data-pct">36,4%</div></div>
+    </div>
+  </div>
+  <div class="analysis-band">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-text"><strong>36,4 % des répondantes ayant précisé cette donnée (4 sur 11)</strong> n'ont pas accès de façon régulière à des ressources financières pour acheter des protections. Ce taux de précarité menstruelle, cohérent avec les données sur le manque d'argent (Q23 : 39,1 % sont parfois ou souvent sans ressources), confirme qu'un programme de distribution gratuite ou subventionnée est une nécessité pour garantir la dignité menstruelle des filles dans cette zone.</div>
+  </div>
+  <div class="note-band">⚠️ Seulement 11 répondantes sur 46 ont renseigné cette question — les valeurs sont donc indicatives et non généralisables à l'ensemble de l'échantillon.</div>
+</div>
+
+</div><!-- fin .container -->
+
+<footer>
+  <strong>Rapport d'analyse — Hygiène Menstruelle à Savalou, Bénin</strong><br>
+  Enquête menée le 20 mai 2026 • 46 répondantes • 54 questions • Données issues du formulaire Google Forms<br>
+  Tous les graphiques sont basés sur les données brutes du fichier Excel de collecte — aucune abréviation dans ce document.
+</footer>
+
+<!-- ============= SCRIPTS CHART.JS ============= -->
 <script>
-    // --- 1. DONNÉES (Structure précédente conservée) ---
-    const headers = [
-        "Horodateur", "Ethnie", "Âge", "Classe ou Profession?", "Avec qui vivez-vous ?", 
-        "Niveau d’étude de la mère", "Niveau d’étude de la tutrice", "Niveau d’étude du père", 
-        "Niveau d’étude du tuteur", "Aviez-vous déjà eu vos menstrues/règles ?", 
-        "A quel âge avez-vous eu les premières règles ?", 
-        "Aviez-vous des informations sur les menstruations avant leur survenue ?", 
-        "Si oui, auprès de qui les aviez-vous obtenues ?", 
-        "Etes-vous satisfaites des informations obtenues sur l’hygiène menstruelle ?", 
-        "Si non, comment faites-vous pour satisfaire votre besoin ?", 
-        "Selon vous à quoi servent les menstrues ?", "Savez-vous ce qu’est le cycle menstruel ?", 
-        "Selon vous quelle est la durée d’un cycle menstruel normal ?", 
-        "Connaissez-vous des produits d’hygiène menstruelle ?", 
-        "Si oui précisez le ou lesquels", 
-        "Quels types de produits utilisez-vous pendant vos règles ?", 
-        "Combien de fois changez-vous de protection hygiénique par jour pendant vos menstrues à l’école ?", 
-        "Manquez-vous de l'argent pour acheter des protections?", 
-        "Vous sentez-vous gênée de demander des serviettes hygiéniques ?", 
-        "Faites-vous une toilette intime pendant vos règles ?", 
-        "Si oui combien de fois par jour ?", 
-        "Avec quoi faites-vous la toilette intime ?", 
-        "Si non expliquez-nous comment vous faites.", 
-        "Prenez-vous des douches pendant vos règles ?", 
-        "Si oui combien de fois par jour ?", 
-        "Comment faites-vous à l’école pendant vos règles ?", 
-        "Qui vous a appris l’hygiène à observer pendant les menstrues ?", 
-        "Quels sont les problèmes liés aux menstruations que vous rencontrez ?", 
-        "Accepteriez-vous de participer à une séance d’information et d’éducation sur l’hygiène menstruelle/ Santé reproductive ?", 
-        "Si non pourquoi ?", 
-        "Si oui, aviez-vous une préférence sur un sujet à aborder ? (Précisez-le)", 
-        "Avez-vous des démangeaisons/brûlures mictionnelles pendant vos règles ?", 
-        "Si oui, préciser", 
-        "Ressentez-vous des douleurs au bas ventre pendant vos règles ?", 
-        "Comment gerez-vous ces douleurs pendant les règles ?", 
-        "Existe-t-il une Infirmerie au sein du Collège ?", 
-        "Est-elle fonctionnelle ?", 
-        "Aviez-vous déjà reçu une fois des calmants pendant vos règles ?", 
-        "Aviez-vous reçu une éducation sur l’hygiène menstruelle à l’école ?", 
-        "Existe-t-il des toilettes pour filles au sein du Collège ?", 
-        "Pouvez-vous fermer à l’intérieur les toilettes et vous changer en toute intimité ?", 
-        "Où jetez-vous vos protections usagées ?", 
-        "Aviez-vous reçu gratuitement des serviettes hygiéniques ?", 
-        "Si oui, qui vous l’avais donné ?", 
-        "Profession du père", "Profession de la mère", 
-        "Niveau d’instruction du père", "Niveau d’instruction de la mère", 
-        "Source principale de revenu du ménage", 
-        "Disponibilité régulière de ressources financières pour l’achat de serviettes"
-    ];
+const COLORS = ['#1a5276','#c0392b','#1e8449','#b7950b','#6c3483','#117a65','#873600','#555555'];
+const C = Chart;
 
-    // Données brutes compressées pour le code (46 lignes)
-    const rawData = [
-        { h:"5/20/2026 12:54:06", e:"Fon", a:"15", c:"SECONDE", v:"Parents", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"Jamais", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"RIEN", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"QUELLES SONT LES METHODES CONTRACEPTIVES DE GROSSESSE", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"DIRECTEUR", pm:"DIRECTRICE", ip:"Supérieur", im:"Supérieur", rev:"SALAIRE DES PARENTS", dispo:"OUI" },
-        { h:"5/20/2026 13:05:05", e:"Mahi", a:"21", c:"3 EME ANNEE", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Maman, Amies, Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tampons", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"je vais à l'infirmerie afin de rester aliter", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"néant", dem:"oui", pdem:"C’est normal", ventre:"oui", gdo:"Je prends des calmants", inf:"oui", fonc:"oui", calm:"oui", edu:"oui", toiF:"oui", int:"oui", jet:"Emballées dans un sachet noir et jeter dans la poubelle à l’école", grat:"non", qdon:"*", pp:"insitituteur", pm:"ménageur", ip:"Supérieur", im:"Secondaire", rev:"père et mère", dispo:"OUI" },
-        { h:"5/20/2026 13:09:43", e:"Fon", a:"25 ANS", c:"*", v:"Parents", nm:"Primaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman, Sœur", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:13:22", e:"Fon", a:"24", c:"*", v:"Seule", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tampons", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Dysménorhée", acc:"OUI", npourquoi:"*", pref:"non, je suis polyvalente", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:23:41", e:"Mahi", a:"23", c:"*", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Amies", sat:"NON", ncom:"Je m'informe sur internet", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Tampons", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel", freq:"3 fois/jour", arg:"Souvent", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman, Réseaux sociaux", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:31:22", e:"Fon", a:"23", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruite", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman, Sœur", sat:"NON", ncom:"demander à ma mère", but:"Aucune idée", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"2 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau simple, eau tiède", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"les règles ne sont jamais arrivées à l'école", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:39:52", e:"nago", a:"24", c:"licence", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruite", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Amies", sat:"NON", ncom:"demander à mon entourage", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"4 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"4 fois/jour", ato:"eau tiède pour la toilette à cause de mes dysménorrhée", nto:"eau tiède pour la toilette à cause de mes dysménorrhée", dou:"OUI", fdo:"3 fois/jour", eco:"des fois je trouve des excuses pour rentrer", qui:"Sœur", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe, Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"comment faire pour ne pas avoir les règles douloureuses?", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants, je reste à la maison la durée du saignement les deux premiers jours. j'utilise des compress chaudes sur le ventre", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:43:05", e:"Aja", a:"28", c:"Terminale", v:"Seule", nm:"Secondaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Maman, Enseignement", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je fais la toilette intime", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:46:08", e:"Mahi", a:"26", c:"*", v:"Parents", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"J'utilise l'eau avec un produit de la pharmacie pour faire ma toilette", dou:"OUI", fdo:"3 fois/jour", eco:"je garde des serviettes secours et je me controle", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:50:11", e:"*", a:"28", c:"*", v:"Seule", nm:"Supérieure", nt:"Supérieure", np:"Primaire", ntu:"Supérieure", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau simple", nto:"j'utilise l'eau simple pour faire ma toilette", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"pour bien etre propre et éviter les infections", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 13:54:52", e:"Fon", a:"28", c:"*", v:"Seule", nm:"Peu instruite", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel, Tampons, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je pars dans les toilettes pour me changer et pour me nettoyer avec de l'eau", qui:"Amies", prob:"Coût, Peur de fuite de l’uniforme, Moqueries des camarades de classe, Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"règles douloureuses", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:04:23", e:"Idaasha", a:"30", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"*", dur:"Entre 21 et 35 jours", prod:"*", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques lavables", freq:"2 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"mal au bas ventre", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:08:09", e:"Aja", a:"28", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruite", ntu:"*", m:"OUI", age:"11 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Amies", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:12:20", e:"Ifè", a:"38", c:"3 ème", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"*", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"lorsque j'allais à l'école ,je gardais mes protections pour ne pas etre surprises", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"comment calculer son cycle menstruel", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:16:14", e:"Losso", a:"28", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"9 ans", inf:"NON", src:"*", sat:"NON", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"2 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Douleur pelvienne", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:21:42", e:"Ifè", a:"18", c:"3 ème", v:"Parents", nm:"Primaire", nt:"Primaire", np:"Primaire", ntu:"Peu instruit", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques lavables", util:"Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je demande la permission auprès des monsieurs et je passe rapidement aux toilettes pour aller me changer de couche", qui:"Maman", prob:"Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"Je ne sais pas", ventre:"oui", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"cultivateur", pm:"cultivatrice", ip:"Non instruit", im:"Non instruit", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:25:31", e:"Fon", a:"22", c:"Licence", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"12 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Aucune idée", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"quelles sont les conséquences d'une mauvaise hygiène pendant les règles?", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:28:29", e:"Nago", a:"26", c:"*", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"NON", ncom:"*", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"MOI MEME", prob:"*", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:31:49", e:"LOKPA", a:"32", c:"Technicienne agricole", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Sœur", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"*", ncom:"*", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Sœur", prob:"Coût, Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"fréquence du changement des couches", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je prends des calmants, je prend le calmant ibucap", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:34:23", e:"Ifè", a:"18", c:"Coiffeuse", v:"Parents", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple tiède", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 15:38:02", e:"*", a:"33", c:"*", v:"*", nm:"Supérieure", nt:"*", np:"*", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"*", ncom:"PLUS TARD MA Mère m'a aider", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques lavables", util:"Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"connaitre les irrégularités sur l'hygiène menstrulle", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:14:20", e:"goun", a:"18", c:"*", v:"Parents", nm:"Peu instruite", nt:"*", np:"Primaire", ntu:"Secondaire", m:"OUI", age:"13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"NON", ncom:"*", util:"Serviettes hygiéniques lavables", freq:"3 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"Je garde de l'eau au cas ou il n'y en aura pas", qui:"Amies", prob:"Coût, Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"intéret des règles", dem:"oui", pdem:"J’ai honte de me gratter devant mes camarades", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:17:48", e:"Mahi", a:"28", c:"*", v:"*", nm:"*", nt:"*", np:"*", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"Sur les calculs du cycle menstruel", dem:"oui", pdem:"C’est une infection", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:22:08", e:"goun", a:"30", c:"*", v:"Conjoint(e)", nm:"*", nt:"*", np:"*", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"*", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Tante", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe, regard des autres", acc:"OUI", npourquoi:"*", pref:"comment entretenir son corps pendant les menstrues?", dem:"oui", pdem:"J’ai honte de me gratter devant mes camarades, C’est une infection", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:24:30", e:"Fon", a:"25", c:"Terminale", v:"Parents", nm:"Secondaire", nt:"*", np:"*", ntu:"Primaire", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Souvent", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Distance école/maison pour se changer", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:27:25", e:"Mahi", a:"15", c:"*", v:"Tutrice/Tuteur", nm:"Primaire", nt:"Peu instruite", np:"Supérieure", ntu:"Peu instruit", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"NON", ncom:"*", util:"Tissu menstruel", freq:"2 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"non", int:"non", jet:"*", grat:"non", qdon:"*", pp:"Etudiant", pm:"Ménagère", ip:"Supérieur", im:"Primaire", rev:"*", dispo:"NON" },
-        { h:"5/20/2026 16:31:41", e:"EWE", a:"22", c:"Licence", v:"Seule", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman, Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tampons, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"plusieurs fois", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je me change dans les toilettes de l'école et parfois je rentre me changer à la maison puis je reviens à l'école", qui:"Maman, Réseaux sociaux", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:35:33", e:"Mahi", a:"17", c:"Première", v:"Parents", nm:"Peu instruite", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", freq:"2 fois/jour", arg:"Souvent", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Réseaux sociaux", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"C’est normal, C’est une infection", ventre:"oui", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"non", int:"non", jet:"Enterrées ou brûlées", grat:"non", qdon:"*", pp:"Hygiène sanitaire et corporelle", pm:"vendeuse et couturière", ip:"Supérieur", im:"Non instruit", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:38:56", e:"Fon", a:"16", c:"Seconde", v:"Parents", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"12 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Moqueries des camarades de classe, Distance école/maison pour se changer", acc:"Non", npourquoi:"j'ai déjà participer plusieurs fois", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"Ecole", pp:"charpentier", pm:"couturière", ip:"Secondaire", im:"Primaire", rev:"argent des parents", dispo:"OUI" },
-        { h:"5/20/2026 16:43:44", e:"Mahi", a:"16", c:"Seconde", v:"Parents", nm:"Peu instruite", nt:"*", np:"Primaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Souvent", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"NON", fdo:"*", eco:"rein du tout mais parfois genée", qui:"*", prob:"*", acc:"OUI", npourquoi:"*", pref:"conseils pour ne pas etre infectée", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"non", jet:"*", grat:"oui", qdon:"FONDATION CLAUDINE TALON", pp:"Matelacier", pm:"Commerçante", ip:"Primaire", im:"Non instruit", rev:"*", dispo:"NON" },
-        { h:"5/20/2026 16:45:31", e:"Mahi", a:"18", c:"Première", v:"Parents", nm:"Peu instruite", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Tampons, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Coût, Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"hygiène menstruelle", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:48:56", e:"Biali", a:"15", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Tampons, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je reste tranquille", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"oui", int:"non", jet:"Enterrées ou brûlées", grat:"non", qdon:"*", pp:"Pasteur", pm:"Couturière", ip:"Supérieur", im:"Primaire", rev:"*", dispo:"OUI" },
-        { h:"5/20/2026 16:51:22", e:"Nago", a:"20", c:"Première", v:"Tutrice/Tuteur", nm:"Peu instruite", nt:"Peu instruite", np:"Primaire", ntu:"Peu instruit", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Amies", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Souvent", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je suis calme dans mon coin", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"oui pour mieux savoir les choses dans l'hygiène menstruelle et la santé reproductive", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 16:54:11", e:"Mahi", a:"15", c:"Seconde", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Culotte menstruelle", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Jamais", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"un peu stressé à l'école pendant les règles", qui:"Maman", prob:"Peur de fuite de l’uniforme, Distance école/maison pour se changer", acc:"Non", npourquoi:"je suis déjà satisfaite des informations reçues", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"oui", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"Educateur social", pm:"revendeuse", ip:"Supérieur", im:"Secondaire", rev:"du travail de mes parents", dispo:"OUI" },
-        { h:"5/20/2026 16:55:34", e:"Ifè", a:"36", c:"*", v:"Parents", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"13 ans", inf:"NON", src:"*", sat:"*", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:01:42", e:"Sahouè", a:"28", c:"revendeuse", v:"Conjoint(e)", nm:"Peu instruite", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Sœur", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables", util:"Serviettes hygiéniques jetables", freq:"2 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"2 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"2 fois/jour", eco:"*", qui:"Sœur", prob:"douleur", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"oui", gdo:"Je prends des calmants, tisane", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:04:39", e:"Fon", a:"20", c:"Couturière", v:"Conjoint(e)", nm:"Secondaire", nt:"*", np:"Peu instruit", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"NON", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"4 fois / jour", arg:"Jamais", g:"Rarement", toi:"OUI", fto:"4 fois / jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"4 fois / jour", eco:"*", qui:"Maman", prob:"Peur de fuite dans les habits", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:06:31", e:"Mahi", a:"19", c:"Première", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"NON", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"l'abstinence sexuelle et santé reproductive", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:08:16", e:"Ifè", a:"19", c:"Première", v:"Parents", nm:"Peu instruite", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"abstinence sexuelle et santé reproductive", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:11:18", e:"Fon", a:"20", c:"Revendeuse", v:"Conjoint(e)", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"père", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Toujours", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"*", prob:"Peur de fuite de l’uniforme, douleur", acc:"OUI", npourquoi:"*", pref:"qu'est ce que l'hygiène menstruelle?", dem:"non", pdem:"*", ventre:"non", gdo:"Je prends des calmants, clou de girofle + sodabi+citron", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:14:04", e:"Goun", a:"16", c:"Seconde", v:"Parents", nm:"Supérieure", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Enseignement", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse, Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman, Enseignante", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"oui", int:"non", jet:"*", grat:"non", qdon:"*", pp:"Opérateur économique", pm:"Professeur de Math", ip:"Supérieur", im:"Supérieur", rev:"*", dispo:"OUI" },
-        { h:"5/20/2026 17:16:16", e:"Nago", a:"18", c:"Première", v:"Parents", nm:"Secondaire", nt:"*", np:"Supérieure", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman, Réseaux sociaux", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"Entre 21 et 35 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel, Culotte menstruelle", util:"Serviettes hygiéniques jetables, Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Souvent", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme, Moqueries des camarades de classe", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"*", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:19:38", e:"Aja", a:"Adja", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Primaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Serviettes hygiéniques jetables", util:"Serviettes hygiéniques jetables", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je suis calme", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"non", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"Tailleur", pm:"Coiffeuse", ip:"Primaire", im:"Primaire", rev:"*", dispo:"NON" },
-        { h:"5/20/2026 17:24:26", e:"Fon", a:"19", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"NON", dur:"Aucune idée", prod:"OUI", pprec:"Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Jamais", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau simple", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"je suis calme", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"*", fonc:"*", calm:"*", edu:"*", toiF:"*", int:"*", jet:"*", grat:"*", qdon:"*", pp:"*", pm:"*", ip:"*", im:"*", rev:"*", dispo:"*" },
-        { h:"5/20/2026 17:27:49", e:"Mahi", a:"17", c:"Première", v:"Parents", nm:"Secondaire", nt:"*", np:"Secondaire", ntu:"*", m:"OUI", age:"> 13 ans", inf:"NON", src:"*", sat:"OUI", ncom:"*", but:"Éliminer les saletés du corps par le sang menstruel", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques jetables, Serviettes hygiéniques lavables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Parfois", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"On ne se balade pas trop car on peut etre tachée", qui:"Maman", prob:"douleur", acc:"OUI", npourquoi:"*", pref:"comment se protéger pendant les menstrues pour ne pas etre tachée", dem:"non", pdem:"*", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"oui", toiF:"oui", int:"non", jet:"Enterrées ou brûlées", grat:"oui", qdon:"ONG", pp:"Menuisier", pm:"Jadinière", ip:"Secondaire", im:"Secondaire", rev:"argent des parents", dispo:"NON" },
-        { h:"5/20/2026 17:31:25", e:"Mahi", a:"17", c:"Première", v:"Parents", nm:"Primaire", nt:"*", np:"Primaire", ntu:"*", m:"OUI", age:"13 ans", inf:"OUI", src:"Maman", sat:"OUI", ncom:"*", but:"Préparer le corps pour la survenue d’une grossesse", cyc:"OUI", dur:"< 21 jours", prod:"OUI", pprec:"Serviettes hygiéniques lavables, Tissu menstruel", util:"Tissu menstruel", freq:"3 fois/jour", arg:"Jamais", g:"Parfois", toi:"OUI", fto:"3 fois/jour", ato:"A l’eau et au savon", nto:"*", dou:"OUI", fdo:"3 fois/jour", eco:"*", qui:"Maman", prob:"Peur de fuite de l’uniforme", acc:"OUI", npourquoi:"*", pref:"*", dem:"oui", pdem:"Je ne sais pas", ventre:"non", gdo:"Je supporte", inf:"non", fonc:"non", calm:"non", edu:"non", toiF:"non", int:"non", jet:"Emballées dans un sachet noir et jeter à la poubelle à la maison", grat:"non", qdon:"*", pp:"Retraité en Cadaire", pm:"Vendeuse", ip:"Primaire", im:"Non instruit", rev:"argent des parents", dispo:"OUI" }
-    ];
-
-    const keyMap = [
-        "h", "e", "a", "c", "v", "nm", "nt", "np", "ntu", "m", "age", "inf", "src", "sat", "ncom", "but", "cyc", "dur", "prod", "pprec", "util", "freq", "arg", "g", "toi", "fto", "ato", "nto", "dou", "fdo", "eco", "qui", "prob", "acc", "npourquoi", "pref", "dem", "pdem", "ventre", "gdo", "inf", "fonc", "calm", "edu", "toiF", "int", "jet", "grat", "qdon", "pp", "pm", "ip", "im", "rev", "dispo"
-    ];
-
-    // --- 2. MOTEUR D'ANALYSE INTELLIGENTE ---
-    function getDescription(header, labels, data, total) {
-        if (!labels || labels.length === 0) return "Aucune donnée disponible pour cette variable.";
-
-        const topLabel = labels[0];
-        const topCount = data[0];
-        const topPct = Math.round((topCount / total) * 100);
-        const diversity = labels.length;
-
-        let text = "";
-        const highlight = (t) => `<span class="stat-highlight">${t}</span>`;
-
-        // Logique contextuelle basée sur les mots-clés de la question
-        const h = header.toLowerCase();
-
-        if (h.includes("ethnie")) {
-            text = `La population de l'étude est majoritairement composée du groupe ${highlight(topLabel)} (${topPct}%). Cela reflète la démographie locale de la zone de Savalou.`;
-        } 
-        else if (h.includes("âge") || h.includes("age")) {
-            text = `La réponse la plus fréquente concernant l'âge est ${highlight(topLabel)}. Cela suggère que l'échantillon est ${topLabel.includes(">") ? "plutôt âgé" : "jeune ou adulte"}.`;
-        }
-        else if (h.includes("classe") || h.includes("profession")) {
-            text = `Le statut socioprofessionnel dominant est ${highlight(topLabel)}. Cela indique que l'enquête a touché principalement une population ${topLabel.includes("ème") ? "scolarisée" : "active"}.`;
-        }
-        else if (h.includes("avant leur survenue") || h.includes("information")) {
-            if (topLabel.toUpperCase() === "NON") text = `Une majorité (${topPct}%) des répondantes ${highlight("n'avaient aucune information")} avant l'arrivée des premières règles. C'est un facteur de risque psychologique important.`;
-            else text = `La majorité (${topPct}%) avait reçu une information. Cela montre un début de transmission du savoir, probablement intra-familiale.`;
-        }
-        else if (h.includes("auprès de qui")) {
-            text = `La source principale d'information est ${highlight(topLabel)}. Cela confirme le rôle central de la ${topLabel.includes("Maman") ? "famille maternelle" : "famille"} dans l'éducation initiale.`;
-        }
-        else if (h.includes("produits utilisez")) {
-            text = `Le produit le plus utilisé est ${highlight(topLabel)}. ${topLabel.toLowerCase().includes("tissu") ? "L'usage du tissu révèle souvent une contrainte économique ou une habitude culturelle." : "L'usage de protections jetables indique un accès au marché moderne."}`;
-        }
-        else if (h.includes("problèmes") || h.includes("rencontrés")) {
-            text = `Le problème majeur cité est ${highlight(topLabel)}. ${topLabel.toLowerCase().includes("fuite") || topLabel.toLowerCase().includes("peur") ? "L'anxiété sociale liée aux fuites est un obstacle majeur à la sérénité." : "Les difficultés logistiques et sanitaires prédominent."}`;
-        }
-        else if (h.includes("douleur") || h.includes("ventre")) {
-            if (topLabel.toUpperCase() === "OUI") text = `Une forte proportion (${topPct}%) ressent des douleurs. La dysménorrhée est une plainte fréquente nécessitant une prise en charge.`;
-            else text = `La majorité ne ressent pas de douleurs sévères, indiquant un cycle plutôt physiologique pour cet échantillon.`;
-        }
-        else if (h.includes("infirmerie") || h.includes("fonctionnelle") || h.includes("toilettes")) {
-            text = `Concernant les infrastructures scolaires, la situation est ${highlight(topLabel)}. ${topLabel.toUpperCase() === "NON" || topLabel.toUpperCase() === "NON" ? "L'absence ou la non-fonctionnalité des infrastructures est un frein à la gestion hygiénique à l'école." : "La présence d'infrastructures facilite la gestion des règles."}`;
-        }
-        else if (h.includes("manque d'argent")) {
-            if (topLabel.toUpperCase() === "JAMAIS") text = `Heureusement, ${topPct}% des femmes ne manquent jamais d'argent pour des protections.`;
-            else text = `Le facteur économique est critique : ${topPct}% déclarent manquer d'argent. Cela force l'usage de méthodes peu hygiéniques (tissu).`;
-        }
-        else {
-            // Générique intelligent
-            if (diversity > 5) {
-                text = `Les réponses sont très diversifiées (${diversity} catégories différentes). Toutefois, ${highlight(topLabel)} ressort comme la tendance principale (${topCount} mentions).`;
-            } else {
-                text = `Il existe un relatif consensus. ${highlight(topLabel)} est la réponse dominante, citée par ${topPct}% des répondantes.`;
-            }
-        }
-
-        return text;
+function pie(id, labels, data, total) {
+  const pcts = data.map(d => Math.round(d/total*1000)/10);
+  new C(document.getElementById(id), {
+    type:'doughnut',
+    data:{
+      labels: labels.map((l,i)=> l+' — '+data[i]+' ('+pcts[i]+'%)'),
+      datasets:[{data, backgroundColor:COLORS.slice(0,data.length), borderWidth:2, borderColor:'#fff'}]
+    },
+    options:{
+      cutout:'50%',
+      plugins:{
+        legend:{display:true,position:'bottom',labels:{font:{size:11},boxWidth:14,padding:8}},
+        tooltip:{callbacks:{label:ctx=> ' '+ctx.parsed+' répondantes ('+pcts[ctx.dataIndex]+'%)'}}
+      }
     }
+  });
+}
 
-    // --- 3. LOGIQUE DE RENDU ---
-    const grid = document.getElementById('grid');
-    const totalRespondents = rawData.length;
-    let chartInstances = [];
-    
-    // Palette Pro
-    const proPalette = ['#1e293b', '#3b82f6', '#0f766e', '#d97706', '#dc2626', '#64748b', '#7c3aed', '#db2777'];
-
-    headers.forEach((header, index) => {
-        const key = keyMap[index];
-        if (!key) return;
-
-        // Traitement données
-        const columnData = rawData.map(row => row[key]).filter(val => val && val !== "*");
-        const counts = {};
-        columnData.forEach(val => {
-            if (val.includes(',')) {
-                val.split(',').forEach(p => { const c = p.trim(); if(c) counts[c] = (counts[c] || 0) + 1; });
-            } else {
-                const c = val.trim(); if(c) counts[c] = (counts[c] || 0) + 1;
-            }
-        });
-
-        let labels = Object.keys(counts);
-        let data = Object.values(counts);
-
-        // Limiter visuel si trop de catégories
-        if (labels.length > 8) {
-            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 8);
-            labels = []; data = [];
-            sorted.forEach(e => { labels.push(e[0]); data.push(e[1]); });
-        }
-
-        // Type Graphique
-        let chartType = 'bar';
-        if (labels.length <= 4) chartType = 'doughnut';
-
-        // Génération HTML
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        const descriptionHTML = getDescription(header, labels, data, totalRespondents);
-
-        card.innerHTML = `
-            <div class="card-header">
-                <h3>${index + 1}. ${header}</h3>
-            </div>
-            <div class="card-body">
-                <div class="analysis-box">
-                    <p class="analysis-text">${descriptionHTML}</p>
-                </div>
-                <div class="chart-container">
-                    <canvas id="chart_${index}"></canvas>
-                </div>
-            </div>
-            <div class="card-footer">
-                <button class="btn-sm" onclick="copyChart('chart_${index}')">📋 Copier</button>
-                <button class="btn-sm" onclick="downloadChart('chart_${index}')">⬇️ Télécharger</button>
-            </div>
-        `;
-        grid.appendChild(card);
-
-        // Chart.js
-        const ctx = document.getElementById(`chart_${index}`).getContext('2d');
-        const bgColors = data.map((_, i) => proPalette[i % proPalette.length]);
-
-        const newChart = new Chart(ctx, {
-            type: chartType,
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Réponses',
-                    data: data,
-                    backgroundColor: chartType === 'bar' ? '#3b82f6' : bgColors,
-                    borderColor: '#ffffff',
-                    borderWidth: 2,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: labels.length > 4 ? 'y' : 'x',
-                plugins: {
-                    legend: { display: chartType === 'doughnut', position: 'right', labels: { font: { family: 'Inter' }, usePointStyle: true } },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleFont: { family: 'Inter', weight: 'bold' },
-                        bodyFont: { family: 'Inter' },
-                        padding: 12,
-                        cornerRadius: 8
-                    }
-                },
-                scales: chartType === 'bar' ? {
-                    x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } },
-                    y: { grid: { color: '#e2e8f0' }, border: { display: false } }
-                } : {}
-            }
-        });
-        chartInstances.push(newChart);
-    });
-
-    // --- 4. FONCTIONS GLOBALES ---
-    function changeGlobalFont(fontFamily) {
-        document.body.style.fontFamily = fontFamily;
-        Chart.defaults.font.family = fontFamily;
-        chartInstances.forEach(c => c.update());
-        showToast("Police changée en " + fontFamily);
+function bar(id, labels, data, total) {
+  const pcts = data.map(d => Math.round(d/total*1000)/10);
+  new C(document.getElementById(id), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        data,
+        backgroundColor: COLORS.slice(0,data.length),
+        borderRadius:6,
+        borderWidth:0
+      }]
+    },
+    options:{
+      indexAxis: labels.length > 4 ? 'y' : 'x',
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>' '+ctx.parsed.x+' rép. ('+pcts[ctx.dataIndex]+'%)'}}
+      },
+      scales:{
+        x:{grid:{display:false}, ticks:{font:{size:11}}},
+        y:{grid:{color:'#eee'}, border:{display:false},
+           ticks:{font:{size:11},callback:(v,i)=> {
+             const s = labels[i]; return s.length>28?s.substring(0,26)+'…':s;
+           }}}
+      }
     }
+  });
+}
 
-    function downloadChart(id) {
-        const canvas = document.getElementById(id);
-        const link = document.createElement('a');
-        link.download = `Analyse_${id}.png`;
-        link.href = canvas.toDataURL("image/png", 1.0);
-        link.click();
+function hbar(id, labels, data, total) {
+  const pcts = data.map(d => Math.round(d/total*1000)/10);
+  new C(document.getElementById(id), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        data,
+        backgroundColor: COLORS.slice(0,data.length),
+        borderRadius:6, borderWidth:0
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>' '+ctx.parsed.x+' rép. ('+pcts[ctx.dataIndex]+'%)'}}
+      },
+      scales:{
+        x:{grid:{color:'#eee'}, border:{display:false}, ticks:{font:{size:11}}},
+        y:{grid:{display:false}, ticks:{font:{size:11},callback:(v,i)=>{
+          const s=labels[i]; return s.length>32?s.substring(0,30)+'…':s;
+        }}}
+      }
     }
+  });
+}
 
-    function copyChart(id) {
-        const canvas = document.getElementById(id);
-        canvas.toBlob(blob => {
-            try {
-                navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-                showToast("Graphique copié !");
-            } catch (e) { alert("Copie non supportée par ce navigateur."); }
-        });
-    }
+// ------ ETHNIE ------
+pie('c_ethnie',
+  ['Mahi','Fon','Ifè','Nago (total)','Aja','Goun (total)','Autres'],
+  [12,11,5,4,3,3,6], 44);
 
-    async function downloadAllZip() {
-        const zip = new JSZip();
-        const folder = zip.folder("Memoire_Savalou_Charts");
-        showToast("Compression en cours...");
-        
-        for (let i = 0; i < chartInstances.length; i++) {
-            const canvas = document.getElementById(`chart_${i}`);
-            if(canvas) {
-                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-                folder.file(`${i+1}_${headers[i].substring(0,20).replace(/[^a-z0-9]/gi,'_')}.png`, blob);
-            }
-        }
-        zip.generateAsync({type:"blob"}).then(c => saveAs(c, "Memoire_Complet_Analyse.zip"));
-    }
+// ------ ÂGE ------
+bar('c_age',
+  ['15 ans','16 ans','17 ans','18 ans','19–22 ans','23–26 ans','28–38 ans'],
+  [4,3,3,5,10,7,13], 45);
 
-    function showToast(msg) {
-        const t = document.getElementById("toast");
-        t.innerText = msg;
-        t.className = "show";
-        setTimeout(() => t.className = t.className.replace("show", ""), 3000);
-    }
+// ------ CLASSE ------
+hbar('c_classe',
+  ['Classe de Première','Classe de Seconde','Terminale / 3ème année','Licence / Supérieur','Professions diverses'],
+  [11,5,3,3,8], 30);
+
+// ------ VIE ------
+pie('c_vie',
+  ['Avec les parents','Avec conjoint(e)','Seule','Avec tuteur/tutrice'],
+  [25,12,5,2], 44);
+
+// ------ NIVEAU MÈRE ------
+pie('c_nm',
+  ['Peu instruite','Niveau primaire','Niveau secondaire','Niveau supérieur'],
+  [18,10,10,6], 44);
+
+// ------ NIVEAU PÈRE ------
+pie('c_np',
+  ['Niveau supérieur','Peu instruit','Niveau secondaire','Niveau primaire'],
+  [16,10,9,7], 42);
+
+// ------ MENSTRUES ------
+pie('c_menstrues',['Oui (toutes les répondantes)','Non'],[46,0], 46);
+
+// ------ ÂGE RÈGLES ------
+bar('c_agereg',
+  ['Après 13 ans','À 13 ans','À 12 ans','À 11 ans','À 9 ans'],
+  [34,5,5,1,1], 46);
+
+// ------ INF AVANT ------
+pie('c_infavant',
+  ['Oui, avaient des informations','Non, aucune information préalable'],
+  [25,21], 46);
+
+// ------ SOURCE ------
+hbar('c_source',
+  ['Maman','Enseignement scolaire','Amies','Sœur','Réseaux sociaux','Père'],
+  [16,7,4,3,1,1], 32);
+
+// ------ SATISFACTION ------
+pie('c_sat',
+  ['Oui, satisfaites','Non, pas satisfaites'],
+  [39,5], 44);
+
+// ------ BUT ------
+pie('c_but',
+  ['Éliminer les saletés du corps','Préparer le corps à la grossesse','Aucune idée'],
+  [27,26,2], 55);
+
+// ------ CYCLE ------
+pie('c_cyc',
+  ['Oui, connaissent le cycle','Non, ne connaissent pas'],
+  [31,14], 45);
+
+// ------ DURÉE ------
+pie('c_dur',
+  ['Entre 21 et 35 jours (normal)','Aucune idée','Moins de 21 jours'],
+  [32,7,6], 45);
+
+// ------ CONNAISSANCE PRODUITS ------
+pie('c_prod',['Oui, connaissent des produits','Non, ne connaissent rien'],[40,3], 43);
+
+// ------ PRODUITS PRÉCISÉS ------
+hbar('c_pprec',
+  ['Serviettes hygiéniques jetables','Serviettes hygiéniques lavables','Tissu menstruel','Culotte menstruelle','Tampons'],
+  [36,24,24,12,7], 40);
+
+// ------ PRODUITS UTILISÉS ------
+bar('c_util',
+  ['Tissu menstruel','Serviettes jetables','Serviettes lavables'],
+  [24,23,10], 46);
+
+// ------ FRÉQUENCE CHANGEMENT ------
+bar('c_freq',
+  ['3 fois/jour','2 fois/jour','4 fois/jour','Jamais (ne se change pas)'],
+  [34,9,2,1], 46);
+
+// ------ ARGENT ------
+pie('c_arg',
+  ['Jamais de manque','Parfois manque d\'argent','Souvent manque d\'argent'],
+  [28,13,5], 46);
+
+// ------ GÊNE ------
+bar('c_gene',
+  ['Jamais gênée','Parfois gênée','Toujours gênée','Souvent gênée','Rarement gênée'],
+  [17,12,9,7,1], 46);
+
+// ------ TOILETTE INTIME ------
+pie('c_toi',['Oui (toutes les répondantes)','Non'],[46,0], 46);
+
+// ------ FRÉQUENCE TOILETTE ------
+bar('c_fto',
+  ['3 fois/jour','2 fois/jour','4 fois ou plus/jour','Plusieurs fois (non précisé)'],
+  [36,7,2,1], 46);
+
+// ------ AVEC QUOI TOILETTE ------
+pie('c_ato',
+  ['Eau simple seulement','Eau et savon','Eau tiède'],
+  [23,21,2], 46);
+
+// ------ DOUCHES ------
+pie('c_dou',
+  ['Oui, prennent des douches','Non, ne se douchent pas'],
+  [45,1], 46);
+
+// ------ FRÉQUENCE DOUCHES ------
+bar('c_fdo',
+  ['3 fois/jour','2 fois/jour','4 fois/jour'],
+  [34,10,1], 45);
+
+// ------ QUI A APPRIS ------
+hbar('c_qui',
+  ['Maman','Sœur','Réseaux sociaux','Amies','Tante','Enseignante','Elle-même'],
+  [35,4,3,3,1,1,1], 48);
+
+// ------ PROBLÈMES ------
+hbar('c_prob',
+  ['Peur de fuite sur l\'uniforme/habits','Moqueries des camarades','Distance école–maison','Douleurs (pelvienne, dysménorrhée)','Coût des protections','Autres (regard des autres…)'],
+  [34,12,7,5,4,2], 46);
+
+// ------ ACCEPTATION FORMATION ------
+pie('c_acc',
+  ['Oui, acceptent de participer','Non, refusent'],
+  [44,2], 46);
+
+// ------ DÉMANGEAISONS ------
+pie('c_dem',
+  ['Non, pas de démangeaisons','Oui, ont des démangeaisons/brûlures'],
+  [37,9], 46);
+
+// ------ PRÉCISION DÉMANGEAISONS ------
+bar('c_pdem',
+  ['Pense que c\'est une infection','Honte de se gratter','Considère ça comme normal','Ne sait pas'],
+  [6,2,2,2], 12);
+
+// ------ DOULEURS VENTRE ------
+pie('c_ventre',
+  ['Oui, souffrent de dysménorrhée','Non, pas de douleurs'],
+  [37,9], 46);
+
+// ------ GESTION DOULEURS ------
+bar('c_gdo',
+  ['Prend des calmants','Supporte sans traitement','Remèdes traditionnels (tisane, compresses…)'],
+  [20,18,3], 41);
+
+// ------ INFIRMERIE ------
+pie('c_infi',
+  ['Non, pas d\'infirmerie','Oui, il y a une infirmerie'],
+  [12,1], 13);
+
+// ------ FONCTIONNELLE ------
+pie('c_fonc',
+  ['Non, infirmerie non fonctionnelle','Oui, fonctionnelle'],
+  [12,1], 13);
+
+// ------ CALMANTS ÉCOLE ------
+pie('c_calm',
+  ['Non, n\'ont jamais reçu de calmants','Oui, ont reçu des calmants'],
+  [9,4], 13);
+
+// ------ ÉDUCATION ÉCOLE ------
+pie('c_edu',
+  ['Oui, ont reçu une éducation','Non, aucune éducation reçue'],
+  [12,1], 13);
+
+// ------ TOILETTES FILLES ------
+pie('c_toif',
+  ['Oui, il y a des toilettes pour filles','Non, pas de toilettes dédiées'],
+  [10,3], 13);
+
+// ------ INTIMITÉ TOILETTES ------
+pie('c_int',
+  ['Non, ne peuvent pas s\'enfermer en intimité','Oui, peuvent se changer en privé'],
+  [8,5], 13);
+
+// ------ ÉLIMINATION ------
+pie('c_jet',
+  ['Enterrées ou brûlées','Emballées dans sachet et jetées à l\'école','Emballées dans sachet et jetées à la maison'],
+  [8,1,1], 10);
+
+// ------ GRATUITES ------
+pie('c_grat',
+  ['Oui, en ont reçu gratuitement','Non, n\'en ont jamais reçu'],
+  [7,6], 13);
+
+// ------ QUI DONNÉ ------
+pie('c_qdon',
+  ['ONG','École','Fondation Claudine Talon'],
+  [5,1,1], 7);
+
+// ------ INSTRUCTION PÈRE (déclaratif) ------
+pie('c_ip',
+  ['Niveau supérieur','Niveau primaire','Niveau secondaire','Non instruit'],
+  [7,3,2,1], 13);
+
+// ------ INSTRUCTION MÈRE (déclaratif) ------
+pie('c_im',
+  ['Non instruite','Niveau primaire','Niveau secondaire','Niveau supérieur'],
+  [4,4,3,2], 13);
+
+// ------ DISPONIBILITÉ ------
+pie('c_dispo',
+  ['Oui, ressources régulièrement disponibles','Non, ressources insuffisantes'],
+  [7,4], 11);
 </script>
-
 </body>
 </html>
