@@ -27,8 +27,18 @@ body{
   background:var(--navy-900);
   color:var(--ink);
   overflow:hidden;
+  width:100vw; height:100vh;
+  display:flex; align-items:center; justify-content:center;
 }
-.deck{ position:relative; width:100vw; height:100vh; }
+.stage{
+  position:relative;
+  width:1280px; height:720px;
+  flex-shrink:0;
+  background:var(--navy-900);
+  box-shadow:0 20px 90px rgba(0,0,0,.55);
+  transform-origin:center center;
+}
+.deck{ position:absolute; inset:0; width:100%; height:100%; overflow:hidden; }
 
 .slide{
   position:absolute; inset:0;
@@ -77,15 +87,15 @@ body{
   background:var(--blue-050); border:1px solid var(--line);
   padding:.15rem .6rem; letter-spacing:.03em;
 }
-.progress-rail{ position:fixed; left:0; top:0; height:3px; width:100%; background:rgba(255,255,255,.1); z-index:50; }
+.progress-rail{ position:absolute; left:0; top:0; height:3px; width:100%; background:rgba(255,255,255,.1); z-index:50; }
 .progress-bar{ height:100%; background:linear-gradient(90deg,var(--blue-500),var(--gold)); width:0%; transition:width .4s ease; }
 .counter{
-  position:fixed; right:24px; top:14px; z-index:50;
+  position:absolute; right:24px; top:14px; z-index:50;
   color:#dfe9f8; font-size:.78rem; letter-spacing:.05em;
   background:rgba(255,255,255,.1); padding:4px 12px; border-radius:3px;
 }
 .nav-btn{
-  position:fixed; top:50%; transform:translateY(-50%); z-index:50;
+  position:absolute; top:50%; transform:translateY(-50%); z-index:50;
   width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.25);
   background:rgba(10,30,61,.5); color:#eaf1fb; font-size:1.1rem; cursor:pointer;
   display:flex; align-items:center; justify-content:center; transition:.2s;
@@ -171,16 +181,92 @@ ul.points li strong{ color:var(--navy-900); }
 .end-slide .rule{ width:100px; height:1px; background:var(--gold); margin:1.2rem auto; }
 
 @media print{ .nav-btn,.progress-rail,.counter{ display:none; } }
+
+/* ---------- ÉCRAN D'INTRODUCTION ---------- */
+#introScreen{
+  position:fixed; inset:0; z-index:1000;
+  background:radial-gradient(ellipse at center, var(--blue-700) 0%, var(--navy-900) 72%);
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  transition:opacity .85s ease;
+}
+#introScreen.fade-out{ opacity:0; pointer-events:none; }
+.intro-count{
+  font-size:5.2rem; font-weight:700; color:var(--gold);
+  font-family:'Times New Roman', serif;
+  animation:pulseCount 1s ease-in-out infinite;
+}
+@keyframes pulseCount{
+  0%,100%{ transform:scale(1); opacity:.82; }
+  50%{ transform:scale(1.14); opacity:1; }
+}
+.intro-sub{
+  margin-top:1.1rem; font-size:.85rem; letter-spacing:.24em; text-transform:uppercase; color:var(--blue-300);
+}
+.intro-flash{
+  position:fixed; inset:0; z-index:1001; background:#fdf6e8; opacity:0; pointer-events:none;
+}
+.intro-flash.flash{ animation:flashOut .6s ease-out forwards; }
+@keyframes flashOut{
+  0%{ opacity:0; }
+  18%{ opacity:1; }
+  100%{ opacity:0; }
+}
+.intro-credit{ display:none; text-align:center; }
+.intro-credit.show{ display:block; animation:creditIn 1.1s ease forwards; }
+@keyframes creditIn{
+  0%{ opacity:0; transform:translateY(20px) scale(.94); }
+  100%{ opacity:1; transform:translateY(0) scale(1); }
+}
+.intro-credit .line1{ font-size:.82rem; letter-spacing:.36em; text-transform:uppercase; color:var(--blue-300); margin-bottom:1.1rem; }
+.intro-credit .line2{ font-size:2.1rem; font-weight:700; color:#fff; letter-spacing:.05em; }
+.intro-credit .rule{ width:90px; height:1px; background:var(--gold); margin:1.15rem auto; }
+
+/* ---------- OVERLAY ROTATION MOBILE ---------- */
+#rotateOverlay{
+  position:fixed; inset:0; z-index:900;
+  background:var(--navy-900);
+  display:none; align-items:center; justify-content:center; flex-direction:column;
+  color:#fff; text-align:center; padding:2rem;
+}
+#rotateOverlay.show{ display:flex; }
+.rotate-icon{ width:58px; height:58px; margin-bottom:1.3rem; animation:rotateHint 1.7s ease-in-out infinite; }
+@keyframes rotateHint{
+  0%,100%{ transform:rotate(0deg); }
+  50%{ transform:rotate(90deg); }
+}
+#rotateOverlay p{ font-size:1rem; letter-spacing:.02em; color:var(--blue-100); max-width:280px; line-height:1.55; }
+#rotateOverlay .tag{ font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; color:var(--blue-300); margin-top:.9rem; }
 </style>
 </head>
 <body>
 
-<div class="progress-rail"><div class="progress-bar" id="progressBar"></div></div>
-<div class="counter" id="counter">1 / 1</div>
-<button class="nav-btn" id="prevBtn" aria-label="Précédent">&#8249;</button>
-<button class="nav-btn" id="nextBtn" aria-label="Suivant">&#8250;</button>
+<div id="introFlash" class="intro-flash"></div>
+<div id="introScreen">
+  <div class="intro-count" id="introCount">5</div>
+  <div class="intro-sub" id="introSub">La présentation commence dans</div>
+  <div class="intro-credit" id="introCredit">
+    <div class="line1">Présentation réalisée par</div>
+    <div class="line2">MARTIAL HOSSOU</div>
+    <div class="rule"></div>
+  </div>
+</div>
 
-<div class="deck" id="deck"></div>
+<div id="rotateOverlay">
+  <svg class="rotate-icon" viewBox="0 0 24 24" fill="none" stroke="#a8801f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+  </svg>
+  <p>Pour une meilleure expérience, tournez votre écran en mode paysage.</p>
+  <div class="tag">Rapport de fin de formation</div>
+</div>
+
+<div class="stage" id="stage">
+  <div class="progress-rail"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="counter" id="counter">1 / 1</div>
+  <button class="nav-btn" id="prevBtn" aria-label="Précédent">&#8249;</button>
+  <button class="nav-btn" id="nextBtn" aria-label="Suivant">&#8250;</button>
+  <div class="deck" id="deck"></div>
+</div>
 
 <script>
 /* ============================================================
@@ -427,11 +513,12 @@ const slides = [
 
 /* -------------------------------------------------- III. REVUE LITT - CONNAISSANCES */
 {type:"chart", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Revue de littérature : connaissances des femmes",
- note:"Au Niger, 50 % des femmes présentent une mauvaise hygiène menstruelle. La mère demeure, dans plusieurs études africaines, la principale source d'information des adolescentes, bien avant les enseignants ou le personnel de santé.",
+ note:"Au Niger, seule la moitié des femmes affiche une hygiène menstruelle jugée adéquate (l'autre moitié présentant une mauvaise hygiène menstruelle). La mère demeure, dans plusieurs études africaines, la principale source d'information des adolescentes, bien avant les enseignants ou le personnel de santé.",
  bars:[
    {l:"Ouagadougou (Burkina Faso)", v:76.9},
    {l:"Kisangani (RDC)", v:91.5},
-   {l:"BORNEfonden (Togo)", v:65.7}
+   {l:"BORNEfonden (Togo)", v:65.7},
+   {l:"Niger (hygiène jugée adéquate)", v:50}
  ]},
 
 /* -------------------------------------------------- III. REVUE LITT - PRATIQUES */
@@ -505,6 +592,15 @@ const slides = [
    <div class="stat"><div class="n">22,7 ans</div><div class="l">âge moyen des participantes</div></div>
  </div>`},
 
+/* -------------------------------------------------- IV. RESULTATS REPARTITION PAR AGE */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Répartition des femmes enquêtées par tranche d'âge",
+ note:"Les 26 ans et plus et les 19 ans et moins constituent les deux groupes les plus représentés (respectivement 32,6 % et 39,1 %), traduisant une exposition de l'étude à la fois aux adolescentes et aux femmes adultes en âge de procréer.",
+ bars:[
+   {l:"19 ans et moins", v:39.1},
+   {l:"20 à 25 ans", v:23.9},
+   {l:"26 ans et plus", v:32.6}
+ ]},
+
 /* -------------------------------------------------- IV. RESULTATS MENARCHE */
 {type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Âge à la ménarche au sein de l'échantillon",
  note:"73,9 % des participantes ont eu leurs premières règles après l'âge de 13 ans — cohérent avec les données africaines sur la puberté féminine, influencée par la nutrition et le niveau socioéconomique.",
@@ -516,9 +612,17 @@ const slides = [
    {l:"Après 13 ans", v:73.9}
  ]},
 
+/* -------------------------------------------------- IV. RESULTATS INFO REÇUE OU NON */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Ont-elles reçu une information avant leurs premières règles ?",
+ note:"Près d'une participante sur deux (45,6 %) a vécu sa ménarche sans aucune préparation préalable — un vide informationnel qui expose les jeunes filles à la peur, à la confusion, voire à la honte au moment des premières règles.",
+ bars:[
+   {l:"Informées avant la ménarche", v:54.4},
+   {l:"Sans aucune information", v:45.6}
+ ]},
+
 /* -------------------------------------------------- IV. RESULTATS INFO PREALABLE */
-{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Information avant les premières règles et sources",
- note:"45,6 % des participantes déclarent n'avoir reçu aucune information avant leurs premières règles. Parmi celles informées, la mère domine très largement comme source de savoir.",
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Sources d'information sur les premières règles",
+ note:"Parmi les participantes informées avant leur ménarche, la mère domine très largement comme source de savoir, loin devant l'école, les pairs ou le père — confirmant le rôle central, mais parfois isolé, de la transmission familiale.",
  bars:[
    {l:"Mère", v:61.5},
    {l:"Enseignants", v:26.9},
@@ -534,7 +638,20 @@ const slides = [
    <div class="stat"><div class="n">13,05 %</div><div class="l">se déclarent insatisfaites ou sans avis</div></div>
    <div class="stat"><div class="n">40 / 46</div><div class="l">participantes concernées par cette satisfaction déclarée</div></div>
  </div>
- <div class="quote-block" style="margin-top:1.4rem;"><p>Ce résultat doit être lu avec prudence : la satisfaction déclarée ne préjuge pas de la qualité ou de la complétude objective des informations reçues.</p></div>`},
+ <div class="card" style="margin-top:1.1rem;"><h4>Répartition de la satisfaction déclarée</h4>
+   <div class="bar-row"><div class="lbl">Satisfaites</div><div class="bar-track"><div class="bar-fill" data-val="86.95"></div></div><div class="val">86,95 %</div></div>
+   <div class="bar-row"><div class="lbl">Insatisfaites / sans avis</div><div class="bar-track"><div class="bar-fill" data-val="13.05"></div></div><div class="val">13,05 %</div></div>
+ </div>
+ <div class="quote-block" style="margin-top:1.1rem;"><p>Ce résultat doit être lu avec prudence : la satisfaction déclarée ne préjuge pas de la qualité ou de la complétude objective des informations reçues.</p></div>`},
+
+/* -------------------------------------------------- IV. RESULTATS ATTITUDES ET TABOUS */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Attitudes et tabous face aux menstruations",
+ note:"Un paradoxe se dessine : une large majorité des femmes maîtrise au moins un produit d'hygiène et se dit prête à s'impliquer davantage, alors que près des deux tiers ressentent encore de la gêne à demander des serviettes hygiéniques — signe persistant de stigmatisation.",
+ bars:[
+   {l:"Connaissent au moins un produit", v:93},
+   {l:"Prêtes à s'impliquer dans des séances", v:95},
+   {l:"Gênées de demander des serviettes", v:63}
+ ]},
 
 /* -------------------------------------------------- IV. RESULTATS CYCLE ET FONCTION */
 {type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Connaissance du cycle menstruel et de sa fonction",
@@ -601,7 +718,10 @@ const slides = [
    <p>Les menstruations restent entourées d'un halo de silence et de honte : <strong>63 % des participantes</strong> déclarent ressentir de la gêne à demander des serviettes hygiéniques.</p>
    <p>Le recours à des remèdes traditionnels contre la dysménorrhée révèle un accès limité aux analgésiques conventionnels, tandis que la douleur menstruelle est souvent normalisée sans consultation médicale.</p>
  </div>
- <div class="card" style="margin-top:.8rem;"><h4>Absentéisme scolaire</h4><p>Selon l'UNICEF, les adolescentes africaines manquent en moyenne 10 à 20 % de leurs journées scolaires en raison des menstruations — un désavantage éducatif cumulé considérable.</p></div>`},
+ <div class="card" style="margin-top:.8rem;"><h4>Absentéisme scolaire</h4><p>Selon l'UNICEF, les adolescentes africaines manquent en moyenne 10 à 20 % de leurs journées scolaires en raison des menstruations — un désavantage éducatif cumulé considérable.</p>
+   <div class="bar-row" style="margin-top:.7rem;"><div class="lbl">Estimation basse</div><div class="bar-track"><div class="bar-fill" data-val="10"></div></div><div class="val">10 %</div></div>
+   <div class="bar-row"><div class="lbl">Estimation haute</div><div class="bar-track"><div class="bar-fill" data-val="20"></div></div><div class="val">20 %</div></div>
+ </div>`},
 
 /* -------------------------------------------------- CONCLUSION */
 {type:"content", section:"ccl", eyebrow:"Conclusion", title:"Vers une véritable justice menstruelle",
@@ -767,6 +887,62 @@ window.addEventListener('touchend', e=>{
   if(dx>50) goTo(current-1);
   touchX=null;
 });
+
+/* ============================================================
+   MISE À L'ÉCHELLE RESPONSIVE (scène fixe 1280×720)
+   Empêche toute zone non visible ou coupée, quel que soit l'écran.
+   ============================================================ */
+const stage = document.getElementById('stage');
+function fitStage(){
+  const scale = Math.min(window.innerWidth/1280, window.innerHeight/720);
+  stage.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', fitStage);
+window.addEventListener('orientationchange', fitStage);
+fitStage();
+
+/* ============================================================
+   DÉTECTION MOBILE + INVITATION À TOURNER L'ÉCRAN
+   Ne s'affiche que sur appareils tactiles (jamais sur PC).
+   ============================================================ */
+const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+const rotateOverlay = document.getElementById('rotateOverlay');
+function checkOrientation(){
+  if(!isMobile){ rotateOverlay.classList.remove('show'); return; }
+  const portrait = window.innerHeight > window.innerWidth;
+  rotateOverlay.classList.toggle('show', portrait);
+}
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', checkOrientation);
+checkOrientation();
+
+/* ============================================================
+   ÉCRAN D'INTRODUCTION — compte à rebours, flash, signature
+   ============================================================ */
+(function playIntro(){
+  const introScreen = document.getElementById('introScreen');
+  const introCount = document.getElementById('introCount');
+  const introSub = document.getElementById('introSub');
+  const introCredit = document.getElementById('introCredit');
+  const introFlash = document.getElementById('introFlash');
+  let n = 5;
+  const timer = setInterval(()=>{
+    n--;
+    if(n > 0){
+      introCount.textContent = n;
+    } else {
+      clearInterval(timer);
+      introCount.style.display = 'none';
+      introSub.style.display = 'none';
+      introFlash.classList.add('flash');
+      setTimeout(()=>{ introCredit.classList.add('show'); }, 220);
+      setTimeout(()=>{
+        introScreen.classList.add('fade-out');
+        setTimeout(()=>{ introScreen.remove(); }, 900);
+      }, 2300);
+    }
+  }, 1000);
+})();
 
 goTo(0);
 </script>
