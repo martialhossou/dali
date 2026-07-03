@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soutenance — Connaissances et pratiques de l'hygiène menstruelle</title>
+<style>
+:root{
+  --navy-900:#0a1e3d;
+  --navy-800:#0f2c54;
+  --blue-700:#154a8a;
+  --blue-600:#1c5fae;
+  --blue-500:#2b78d6;
+  --blue-300:#7fb0e8;
+  --blue-100:#e4edf9;
+  --blue-050:#f3f7fd;
+  --paper:#ffffff;
+  --ink:#0e2038;
+  --ink-soft:#3c4a5e;
+  --gold:#a8801f;
+  --line:#c9d8ec;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'Times New Roman', Times, Georgia, serif;
+  background:var(--navy-900);
+  color:var(--ink);
+  overflow:hidden;
+}
+.deck{ position:relative; width:100vw; height:100vh; }
+
+.slide{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; justify-content:center;
+  background:var(--paper);
+  opacity:0; visibility:hidden; transform:translateY(14px);
+  transition:opacity .4s ease, transform .4s ease, visibility .4s;
+}
+.slide.active{ opacity:1; visibility:visible; transform:translateY(0); }
+
+/* --- cadre academique (frame) pour les diapositives claires --- */
+.slide.framed{ padding:5.2vh 7.4vw 6.4vh; }
+.slide.framed::before{
+  content:""; position:absolute; inset:14px;
+  border:1px solid var(--blue-300);
+  pointer-events:none;
+}
+.slide.framed::after{
+  content:""; position:absolute; inset:18px;
+  border:1px solid var(--blue-100);
+  pointer-events:none;
+}
+.corner{ position:absolute; width:24px; height:24px; pointer-events:none; z-index:2; }
+.corner svg{width:100%;height:100%;}
+.corner.tl{ top:23px; left:23px; }
+.corner.tr{ top:23px; right:23px; transform:rotate(90deg); }
+.corner.bl{ bottom:23px; left:23px; transform:rotate(-90deg); }
+.corner.br{ bottom:23px; right:23px; transform:rotate(180deg); }
+
+/* --- chrome --- */
+.eyebrow{
+  display:flex; align-items:baseline; gap:.6rem;
+  font-size:.95rem; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--blue-700); font-weight:700; margin-bottom:.9rem;
+  border-bottom:1px solid var(--line); padding-bottom:.5rem;
+}
+.eyebrow .roman{ color:var(--gold); font-weight:700; }
+.slide-foot{
+  position:absolute; left:7.4vw; right:7.4vw; bottom:2.6vh;
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:.76rem; color:var(--ink-soft); letter-spacing:.02em;
+  font-style:italic;
+}
+.slide-foot .pageno{
+  font-style:normal; font-weight:700; color:var(--blue-700);
+  background:var(--blue-050); border:1px solid var(--line);
+  padding:.15rem .6rem; letter-spacing:.03em;
+}
+.progress-rail{ position:fixed; left:0; top:0; height:3px; width:100%; background:rgba(255,255,255,.1); z-index:50; }
+.progress-bar{ height:100%; background:linear-gradient(90deg,var(--blue-500),var(--gold)); width:0%; transition:width .4s ease; }
+.counter{
+  position:fixed; right:24px; top:14px; z-index:50;
+  color:#dfe9f8; font-size:.78rem; letter-spacing:.05em;
+  background:rgba(255,255,255,.1); padding:4px 12px; border-radius:3px;
+}
+.nav-btn{
+  position:fixed; top:50%; transform:translateY(-50%); z-index:50;
+  width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.25);
+  background:rgba(10,30,61,.5); color:#eaf1fb; font-size:1.1rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:.2s;
+  font-family:Georgia, serif;
+}
+.nav-btn:hover{ background:var(--blue-600); border-color:var(--blue-600); }
+#prevBtn{ left:16px; } #nextBtn{ right:16px; }
+
+h1,h2,h3{ font-family:'Times New Roman', Times, serif; color:var(--navy-900); font-weight:700; }
+
+/* ---------- COVER (Bienvenue) ---------- */
+.slide-cover{ background:linear-gradient(150deg,var(--navy-900) 0%, var(--blue-700) 100%); align-items:center; text-align:center; }
+.slide-cover *{ color:#f3f7fd; }
+.slide-cover .kicker{ font-size:.9rem; letter-spacing:.26em; text-transform:uppercase; color:var(--blue-300); margin-bottom:1.6rem; }
+.slide-cover h1{ font-size:2.9rem; color:#fff; letter-spacing:.02em; margin-bottom:1.8rem; }
+.slide-cover .rule{ width:100px; height:1px; background:var(--gold); margin:0 auto 1.8rem; }
+.slide-cover .names{ font-size:1.5rem; font-weight:700; color:#fff; }
+.slide-cover .amp{ color:var(--gold); font-size:1.15rem; margin:.55rem 0; }
+.slide-cover .foot{ position:absolute; bottom:4vh; left:0; right:0; font-size:.82rem; letter-spacing:.06em; color:var(--blue-300); }
+
+/* ---------- TITLE (theme) ---------- */
+.slide-title{ background:linear-gradient(150deg,var(--navy-900) 0%, var(--blue-700) 100%); align-items:center; text-align:center; }
+.slide-title *{ color:#f3f7fd; }
+.slide-title .instit{ font-size:.86rem; letter-spacing:.13em; text-transform:uppercase; color:var(--blue-300); margin-bottom:.35rem; }
+.slide-title .theme-label{ font-size:.92rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin:1.6rem 0 1.1rem; }
+.slide-title h1{ font-size:2.05rem; line-height:1.42; max-width:920px; color:#fff; margin:0 auto 1.8rem; font-weight:700; }
+.slide-title .rule{ width:100px; height:1px; background:var(--blue-300); margin:0 auto 1.4rem; }
+.slide-title .foot{ position:absolute; bottom:4vh; left:0; right:0; font-size:.86rem; color:var(--blue-300); letter-spacing:.03em; }
+
+/* ---------- CONTENT GENERIC ---------- */
+.slide-content h2{ font-size:1.95rem; margin-bottom:1.4rem; max-width:940px; line-height:1.28; }
+.two-col{ display:grid; grid-template-columns:1.05fr .95fr; gap:2.6rem; align-items:start; flex:1; min-height:0; }
+.body-text p{ font-size:1.08rem; line-height:1.62; color:var(--ink-soft); margin-bottom:.85rem; text-align:justify; }
+.body-text strong{ color:var(--navy-900); }
+ul.points{ list-style:none; }
+ul.points li{ position:relative; padding-left:1.5rem; margin-bottom:.68rem; font-size:1.02rem; line-height:1.5; color:var(--ink-soft); }
+ul.points li::before{ content:"\2013"; position:absolute; left:0; color:var(--blue-600); font-weight:700; }
+ul.points li strong{ color:var(--navy-900); }
+
+.card{ background:var(--blue-050); border:1px solid var(--line); padding:1.15rem 1.3rem; }
+.card h4{ font-size:.92rem; text-transform:uppercase; letter-spacing:.04em; color:var(--blue-700); margin-bottom:.55rem; font-weight:700; border-bottom:1px solid var(--line); padding-bottom:.4rem; }
+.card p{ font-size:1rem; color:var(--ink-soft); line-height:1.55; }
+.card p + p{ margin-top:.5rem; }
+
+.stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:1rem; }
+.stat{ background:var(--navy-900); color:#fff; padding:1.1rem 1rem; text-align:center; }
+.stat .n{ font-size:1.95rem; font-weight:700; color:var(--gold); }
+.stat .l{ font-size:.8rem; letter-spacing:.02em; color:var(--blue-100); margin-top:.3rem; line-height:1.4; }
+
+.def-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1.2rem 1.8rem; }
+.def{ border-left:3px solid var(--blue-500); padding-left:1rem; }
+.def h4{ color:var(--navy-900); font-size:1.12rem; margin-bottom:.32rem; font-weight:700; }
+.def p{ font-size:.94rem; color:var(--ink-soft); line-height:1.5; text-align:justify; }
+
+.chart-wrap{ flex:1; display:flex; flex-direction:column; justify-content:center; }
+.bar-row{ display:grid; grid-template-columns:210px 1fr 66px; align-items:center; gap:.8rem; margin-bottom:.8rem; }
+.bar-row .lbl{ font-size:.94rem; color:var(--ink-soft); text-align:right; }
+.bar-track{ background:var(--blue-100); height:20px; }
+.bar-fill{ height:100%; background:var(--blue-600); width:0%; transition:width 1s cubic-bezier(.2,.8,.2,1); }
+.bar-row .val{ font-weight:700; color:var(--navy-900); font-size:.94rem; }
+.chart-source{ font-size:.9rem; color:var(--ink-soft); margin-top:.9rem; font-style:italic; line-height:1.5; border-top:1px solid var(--line); padding-top:.7rem; }
+
+.quote-block{ border-left:3px solid var(--gold); padding-left:1.3rem; max-width:100%; }
+.quote-block p{ font-size:1.12rem; color:var(--navy-900); line-height:1.58; font-style:italic; text-align:justify; }
+
+.tbl{ width:100%; border-collapse:collapse; }
+.tbl th{ background:var(--navy-900); color:#fff; text-align:left; padding:.5rem .75rem; font-size:.85rem; letter-spacing:.02em; font-weight:700; }
+.tbl td{ padding:.48rem .75rem; font-size:.92rem; color:var(--ink-soft); border-bottom:1px solid var(--line); }
+.tbl tr:nth-child(even) td{ background:var(--blue-050); }
+.tbl td.num, .tbl th.num{ text-align:center; }
+.tbl td:first-child{ color:var(--navy-900); }
+
+.plan-list{ margin-top:.7rem; }
+.plan-block{ margin-bottom:.9rem; }
+.plan-block .pt-main{ font-size:1.18rem; font-weight:700; color:var(--navy-900); letter-spacing:.02em; }
+.plan-sub{ margin-left:1.7rem; margin-top:.4rem; }
+.plan-sub .pi{ display:flex; gap:.75rem; font-size:1.04rem; color:var(--ink-soft); margin-bottom:.32rem; }
+.plan-sub .pi .rn{ color:var(--gold); font-weight:700; min-width:24px; }
+
+.end-slide{ background:linear-gradient(150deg,var(--navy-900) 0%, var(--blue-700) 100%); text-align:center; align-items:center; }
+.end-slide *{ color:#fff; }
+.end-slide h2{ color:#fff; font-size:2.3rem; }
+.end-slide .rule{ width:100px; height:1px; background:var(--gold); margin:1.2rem auto; }
+
+@media print{ .nav-btn,.progress-rail,.counter{ display:none; } }
+</style>
+</head>
+<body>
+
+<div class="progress-rail"><div class="progress-bar" id="progressBar"></div></div>
+<div class="counter" id="counter">1 / 1</div>
+<button class="nav-btn" id="prevBtn" aria-label="Précédent">&#8249;</button>
+<button class="nav-btn" id="nextBtn" aria-label="Suivant">&#8250;</button>
+
+<div class="deck" id="deck"></div>
+
+<script>
+/* ============================================================
+   DONNÉES DES DIAPOSITIVES — plan officiel, une idée par diapositive :
+   Introduction / I. Objectifs de stage atteints / II. Problématique /
+   III. Cadre et méthode d'étude / IV. Résultats & Commentaires /
+   Conclusion / Suggestions
+   ============================================================ */
+const ROMAN = {intro:"", I:"I.", II:"II.", III:"III.", IV:"IV.", ccl:"", sugg:""};
+const SECTION_LABELS = {
+  intro:"Introduction",
+  I:"Objectifs de stage atteints",
+  II:"Problématique",
+  III:"Cadre et méthode d'étude",
+  IV:"Résultats & Commentaires",
+  ccl:"Conclusion",
+  sugg:"Suggestions"
+};
+
+function cornerSet(){
+  const c = `<svg viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 20 V4 H18" stroke="#a8801f" stroke-width="1.4" fill="none"/>
+    <path d="M2 20 V10 H10" stroke="#1c5fae" stroke-width="1" fill="none" opacity=".55"/>
+  </svg>`;
+  return `<div class="corner tl">${c}</div><div class="corner tr">${c}</div><div class="corner bl">${c}</div><div class="corner br">${c}</div>`;
+}
+
+const slides = [
+
+/* -------------------------------------------------- COVER */
+{type:"cover"},
+
+/* -------------------------------------------------- TITLE / THEME */
+{type:"title"},
+
+/* -------------------------------------------------- PLAN */
+{type:"content", eyebrow:"Sommaire", title:"Plan de la présentation",
+ html:`<div class="plan-list">
+   <div class="plan-block"><div class="pt-main">Introduction</div></div>
+   <div class="plan-block">
+     <div class="plan-sub">
+       <div class="pi"><span class="rn">I.</span><span>Objectifs de stage atteints</span></div>
+       <div class="pi"><span class="rn">II.</span><span>Problématique</span></div>
+       <div class="pi"><span class="rn">III.</span><span>Cadre et méthode d'étude</span></div>
+       <div class="pi"><span class="rn">IV.</span><span>Résultats &amp; Commentaires</span></div>
+     </div>
+   </div>
+   <div class="plan-block"><div class="pt-main">Conclusion</div></div>
+   <div class="plan-block"><div class="pt-main">Suggestions</div></div>
+ </div>`},
+
+/* -------------------------------------------------- INTRODUCTION */
+{type:"content", section:"intro", eyebrow:"Introduction", title:"Contexte général de l'étude",
+ html:`<div class="body-text">
+   <p>La formation des sages-femmes à l'INMeS / UAC inclut un <strong>stage communautaire de douze semaines</strong> en milieu rural, qui a révélé plusieurs problématiques de santé reproductive chez les femmes en âge de procréer.</p>
+   <p>Ce constat a orienté l'étude vers l'évaluation des <strong>connaissances et pratiques d'hygiène menstruelle</strong> des femmes de 15 à 49 ans reçues à l'hôpital de zone de Savalou en 2026, dans un contexte marqué par des tabous, des inégalités de genre et un manque de ressources.</p>
+ </div>
+ <div class="card" style="margin-top:1rem;"><h4>Organisation du rapport</h4><p>Le document s'organise en deux parties : la première retrace les activités et compétences acquises durant les trois années de formation ; la seconde présente l'étude scientifique — méthodologie, collecte, analyse des données et résultats.</p></div>`},
+
+/* -------------------------------------------------- INTRODUCTION - LIEU DE STAGE */
+{type:"content", section:"intro", eyebrow:"Introduction", title:"Cadre de l'étude : la Zone Sanitaire Savalou–Bantè",
+ two:true,
+ left:`<div class="body-text">
+   <p>Située dans le département des Collines, la Zone Sanitaire Savalou-Bantè couvre <strong>5 369 km²</strong>, répartie en 23 arrondissements et 160 villages, sur deux communes : Savalou et Bantè.</p>
+   <p>L'Hôpital de Zone de Savalou/Bantè, établissement de première référence, regroupe gynéco-obstétrique, pédiatrie, chirurgie, laboratoire et imagerie médicale, entre autres services.</p>
+ </div>`,
+ right:`<div class="stat-grid" style="grid-template-columns:1fr;">
+   <div class="stat"><div class="n">309 726</div><div class="l">habitants estimés (projection RGPH4, 2022)</div></div>
+   <div class="stat"><div class="n">12</div><div class="l">sages-femmes d'État exerçant à la maternité</div></div>
+ </div>`},
+
+/* -------------------------------------------------- I. ORGANISATION DU STAGE */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Organisation des activités de stage",
+ html:`<div class="body-text">
+   <p>Dès l'arrivée dans le service, un planning de répartition des activités a été établi. Réparties en équipes, les stagiaires ont assuré des <strong>gardes de 24 heures suivies de 24 heures de repos</strong>, puis un système de permanence en fin de stage.</p>
+   <p>Un staff matinal quotidien permettait de faire le point de la garde, sous la supervision des sages-femmes et médecins — moments enrichissants d'échange et d'apprentissage clinique.</p>
+ </div>
+ <div class="card" style="margin-top:1rem;"><h4>Rythme des activités</h4>
+   <ul class="points">
+     <li>Permanence en CPN, consultation gynécologique ou à l'ABPF.</li>
+     <li>Garde en salle d'accouchement ou en hospitalisation.</li>
+     <li>Visite en hospitalisation après le staff matinal, puis activités en CPN, CPoN, planification familiale.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- I. TABLEAU ACTIVITES (1/2) */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Activités menées durant le stage clinique (1/2)",
+ html:`<table class="tbl">
+  <tr><th>Activités menées</th><th class="num">KANDISSOUNON</th><th class="num">YAROU</th><th class="num">Objectif assigné</th></tr>
+  <tr><td>Accouchement</td><td class="num">50</td><td class="num">48</td><td class="num">20</td></tr>
+  <tr><td>GATPA</td><td class="num">50</td><td class="num">48</td><td class="num">20</td></tr>
+  <tr><td>Délivrance artificielle / révision utérine</td><td class="num">30</td><td class="num">20</td><td class="num">3</td></tr>
+  <tr><td>Soins au nouveau-né sain</td><td class="num">50</td><td class="num">30</td><td class="num">20</td></tr>
+  <tr><td>Épisiotomie et sa réparation</td><td class="num">16</td><td class="num">18</td><td class="num">2</td></tr>
+  <tr><td>Exploration du bassin</td><td class="num">60</td><td class="num">60</td><td class="num">10</td></tr>
+  <tr><td>AMIU</td><td class="num">8</td><td class="num">6</td><td class="num">10</td></tr>
+ </table>
+ <div class="chart-source">Extrait du Tableau I du rapport — objectifs atteints lors du stage clinique à l'hôpital de zone de Savalou (suite en page suivante).</div>`},
+
+/* -------------------------------------------------- I. TABLEAU ACTIVITES (2/2) */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Activités menées durant le stage clinique (2/2)",
+ html:`<table class="tbl">
+  <tr><th>Activités menées</th><th class="num">KANDISSOUNON</th><th class="num">YAROU</th><th class="num">Objectif assigné</th></tr>
+  <tr><td>Ventouse</td><td class="num">10</td><td class="num">7</td><td class="num">3</td></tr>
+  <tr><td>Présentation clinique</td><td class="num">4</td><td class="num">4</td><td class="num">3</td></tr>
+  <tr><td>DIU</td><td class="num">0</td><td class="num">0</td><td class="num">10</td></tr>
+  <tr><td>Jadelle / Implant</td><td class="num">7</td><td class="num">4</td><td class="num">10</td></tr>
+  <tr><td>IEC / CCC</td><td class="num">4</td><td class="num">4</td><td class="num">3</td></tr>
+  <tr><td>Réanimation du nouveau-né</td><td class="num">16</td><td class="num">18</td><td class="num">10</td></tr>
+  <tr><td>Remplissage des fiches (normes ANIP)</td><td class="num">30</td><td class="num">28</td><td class="num">20</td></tr>
+  <tr><td>Action d'aide à la population en zone rurale</td><td class="num">2</td><td class="num">2</td><td class="num">1</td></tr>
+ </table>
+ <div class="chart-source">La majorité des objectifs assignés ont été atteints, à l'exception de la planification familiale, en raison d'une faible fréquentation du service par les femmes durant la période de stage.</div>`},
+
+/* -------------------------------------------------- I. SOINS USUELS */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Autres activités menées : soins usuels et suivi clinique",
+ html:`<div class="card"><ul class="points">
+     <li>Accueil des clientes, prise des constantes (tension artérielle, température, pouls, poids, taille).</li>
+     <li>Surveillance du travail d'accouchement au partogramme et du post-partum immédiat.</li>
+     <li>Rupture artificielle des membranes, révision utérine.</li>
+     <li>Consultation prénatale recentrée et consultation postnatale.</li>
+     <li>Remplissage des registres : PTME, accouchement, référence, CPN/CPoN, hospitalisation.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- I. SENSIBILISATION */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Autres activités menées : sensibilisation des femmes",
+ html:`<div class="card"><ul class="points">
+     <li>Plan de l'accouchement et préparation à la naissance.</li>
+     <li>Importance de l'échographie et des bilans pendant la grossesse.</li>
+     <li>Signes de danger chez la femme enceinte.</li>
+     <li>Prévention antipalustre et explication des prescriptions sous supervision.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- I. ACTIONS COMMUNAUTAIRES */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Actions sociocommunautaires",
+ two:true,
+ left:`<div class="card"><h4>CEG1 Savalou</h4><p>Séance IEC/CCC sur la planification familiale et l'hygiène menstruelle avec les élèves des classes de première et terminale, dans le cadre de l'action communautaire.</p></div>`,
+ right:`<div class="card"><h4>Atelier de Dénou</h4><p>Sensibilisation sur la planification familiale auprès des apprenties coiffeuses et couturières d'un atelier situé à Dénou, hors du cadre scolaire.</p></div>`},
+
+/* -------------------------------------------------- I. FORCES ET FAIBLESSES */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Forces et faiblesses du lieu de stage",
+ two:true,
+ left:`<div class="card"><h4>Forces</h4>
+   <ul class="points">
+     <li>Personnel qualifié et formé sur les SONU.</li>
+     <li>Accueil immédiat des urgences.</li>
+     <li>Services de radiologie et de laboratoire disponibles sur place.</li>
+   </ul></div>`,
+ right:`<div class="card"><h4>Faiblesses</h4>
+   <ul class="points">
+     <li>Insuffisance de matériel et de salles d'hospitalisation.</li>
+     <li>Une seule sage-femme affectée à la CPN.</li>
+     <li>Absence de salle d'urgence, de réanimation et de soins intensifs.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- I. DIFFICULTES */
+{type:"content", section:"I", eyebrow:"Objectifs de stage atteints", title:"Difficultés rencontrées",
+ html:`<div class="card"><ul class="points">
+     <li>Non-disponibilité permanente de l'eau et barrière linguistique.</li>
+     <li>Faible fréquentation de la consultation postnatale et de la planification familiale.</li>
+     <li>Absence de paillote pour les séances d'IEC/CCC ; distance importante entre le logement et la formation sanitaire.</li>
+   </ul>
+   <p style="margin-top:.7rem;">Une collaboration franche avec les encadreurs a permis de surmonter ces contraintes par l'adaptation.</p></div>`},
+
+/* -------------------------------------------------- II. PROBLEMATIQUE - ENONCE */
+{type:"content", section:"II", eyebrow:"Problématique", title:"Un enjeu de santé publique mondial et local",
+ html:`<div class="body-text">
+   <p>Les menstruations demeurent, dans de nombreux contextes, entourées de <strong>silence, de mythes et de tabous</strong> qui alimentent la stigmatisation et des attitudes culturelles négatives, considérant à tort les femmes réglées comme « impures ».</p>
+   <p>Une gestion inappropriée de l'hygiène menstruelle expose à des infections de l'appareil reproducteur et urinaire, et affecte la confiance en soi et le bien-être psychologique.</p>
+ </div>
+ <div class="stat-grid">
+   <div class="stat"><div class="n">800 M</div><div class="l">femmes menstruées chaque jour dans le monde</div></div>
+   <div class="stat"><div class="n">500 M</div><div class="l">n'ont pas accès à des matériels adéquats</div></div>
+   <div class="stat"><div class="n">11 %</div><div class="l">taux national d'abandon scolaire des filles (2012–2015)</div></div>
+ </div>`},
+
+/* -------------------------------------------------- II. PROBLEMATIQUE - CONTEXTE BENIN */
+{type:"content", section:"II", eyebrow:"Problématique", title:"Le contexte béninois : des actions encore insuffisantes",
+ html:`<div class="body-text">
+   <p>Le Bénin, dans le souci d'atteindre l'Objectif de Développement Durable relatif à l'équité de genre, a mené plusieurs actions : séances de sensibilisation, distribution de kits d'hygiène et de serviettes réutilisables aux filles.</p>
+ </div>
+ <div class="card" style="margin-top:.8rem;"><h4>Actions recensées</h4>
+   <ul class="points">
+     <li>Distribution de 56 000 kits de gestion de l'hygiène menstruelle par l'UNICEF (2022).</li>
+     <li>Sensibilisation et distribution de serviettes lavables et réutilisables dans les écoles (2022–2023).</li>
+     <li>Projet d'Amélioration de l'Hygiène et de l'Assainissement dans les Écoles, avec la Fondation Claudine Talon.</li>
+   </ul>
+   <p style="margin-top:.6rem;">Malgré ces efforts, les connaissances et pratiques des femmes restent insuffisantes.</p></div>`},
+
+/* -------------------------------------------------- II. QUESTIONS DE RECHERCHE */
+{type:"content", section:"II", eyebrow:"Problématique", title:"Questions de recherche",
+ html:`<div class="card"><ul class="points">
+     <li>Quel est le niveau de connaissance des femmes de 15 à 49 ans sur l'hygiène menstruelle ?</li>
+     <li>Quelles sont les pratiques d'hygiène menstruelle adoptées par ces femmes ?</li>
+     <li>Quels sont les facteurs socioculturels, économiques et éducatifs influençant ces connaissances et pratiques ?</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- II. HYPOTHESES */
+{type:"content", section:"II", eyebrow:"Problématique", title:"Hypothèses de recherche",
+ html:`<div class="card"><ul class="points">
+     <li>La majorité des femmes en âge de procréer ont de <strong>faibles connaissances</strong> concernant les menstruations.</li>
+     <li>Les pratiques d'hygiène menstruelle sont <strong>influencées par l'éducation</strong> reçue.</li>
+     <li>Une meilleure sensibilisation et éducation peuvent <strong>améliorer</strong> les connaissances et les pratiques.</li>
+     <li>Les connaissances et pratiques sont influencées par certains <strong>tabous et croyances</strong>.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- II. OBJECTIFS DE RECHERCHE */
+{type:"content", section:"II", eyebrow:"Problématique", title:"Objectifs de l'étude",
+ html:`<div class="card" style="margin-bottom:1.1rem;">
+   <h4>Objectif général</h4>
+   <p>Connaître les connaissances et les pratiques des femmes en âge de procréer de 15 à 49 ans sur l'hygiène menstruelle, à l'hôpital de zone de Savalou.</p>
+ </div>
+ <div class="card"><h4>Objectifs spécifiques</h4>
+   <ul class="points" style="margin-top:.4rem;">
+     <li>Identifier le niveau de connaissance des femmes sur l'hygiène menstruelle.</li>
+     <li>Décrire les pratiques d'hygiène menstruelle des femmes enquêtées.</li>
+     <li>Identifier les facteurs socioculturels, économiques et éducatifs influents.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- III. DEFINITIONS I */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Définitions des concepts clés (1/2)",
+ html:`<div class="def-grid">
+   <div class="def"><h4>Hygiène menstruelle</h4><p>Usage de matériel propre, changé en toute intimité, toilette à l'eau et au savon, et accès à des installations pour l'élimination des déchets (OMS/UNICEF).</p></div>
+   <div class="def"><h4>Cycle menstruel</h4><p>Cycle biologique féminin d'une durée théorique de 28 jours, du premier jour des règles au dernier jour avant les règles suivantes.</p></div>
+   <div class="def"><h4>Dysménorrhée</h4><p>Douleurs pelviennes ou abdominales intenses avant ou pendant les règles, touchant 40 à 90 % des adolescentes.</p></div>
+   <div class="def"><h4>Ménarche</h4><p>Survenue des toutes premières menstruations, marquant l'entrée dans la période d'activité génitale.</p></div>
+ </div>`},
+
+/* -------------------------------------------------- III. DEFINITIONS II */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Définitions des concepts clés (2/2)",
+ html:`<div class="def-grid">
+   <div class="def"><h4>Équité menstruelle</h4><p>Droit humain fondamental garantissant à toute personne réglée une gestion sûre et digne de ses règles, sans stigmatisation.</p></div>
+   <div class="def"><h4>Tabou</h4><p>Interdiction sociale, morale ou culturelle empêchant l'expression libre d'un sujet jugé sensible ou gênant.</p></div>
+   <div class="def"><h4>Santé menstruelle</h4><p>Va au-delà de l'hygiène : ensemble des droits et conditions pour vivre ses règles dignement et sans discrimination.</p></div>
+   <div class="def"><h4>Précarité menstruelle</h4><p>Manque d'accès à des protections, à l'eau et à des infrastructures adaptées pour gérer ses menstruations.</p></div>
+ </div>`},
+
+/* -------------------------------------------------- III. REVUE LITT - CYCLE */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Notions de base sur le cycle menstruel",
+ html:`<div class="body-text">
+   <p>Le cycle menstruel regroupe l'ensemble des phénomènes physiologiques préparant l'organisme féminin à une éventuelle fécondation. Sa durée habituelle est de 28 jours, mais il peut être plus long, plus bref, ou irrégulier.</p>
+   <p>Par convention, le premier jour du cycle correspond au premier jour des règles. La muqueuse utérine s'épaissit progressivement, de 0,5 mm en fin de menstruation à 5 mm au 28<sup>e</sup> jour du cycle.</p>
+ </div>
+ <div class="card" style="margin-top:.8rem;"><h4>Deux cycles imbriqués</h4><p>Le cycle utérin (épaississement de l'endomètre) se déroule en parallèle du cycle ovarien, au cours duquel un ovocyte mûrit en vue d'une fécondation possible. Le cycle débute à la puberté et se termine à la ménopause.</p></div>`},
+
+/* -------------------------------------------------- III. REVUE LITT - CONNAISSANCES */
+{type:"chart", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Revue de littérature : connaissances des femmes",
+ note:"Au Niger, 50 % des femmes présentent une mauvaise hygiène menstruelle. La mère demeure, dans plusieurs études africaines, la principale source d'information des adolescentes, bien avant les enseignants ou le personnel de santé.",
+ bars:[
+   {l:"Ouagadougou (Burkina Faso)", v:76.9},
+   {l:"Kisangani (RDC)", v:91.5},
+   {l:"BORNEfonden (Togo)", v:65.7}
+ ]},
+
+/* -------------------------------------------------- III. REVUE LITT - PRATIQUES */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Revue de littérature : pratiques et précarité",
+ html:`<div class="body-text">
+   <p>Chaque jour, un tiers des femmes dans le monde n'a pas accès à l'eau propre, à des toilettes décentes ni à des protections adaptées pour vivre cette période avec dignité.</p>
+   <p>En Égypte et en Ouganda, la gestion des déchets menstruels reste insuffisante. À Kédougou (Sénégal), plus de la moitié des femmes utilisent des tissus faute de moyens, avec un risque accru d'infections.</p>
+ </div>
+ <div class="card" style="margin-top:.8rem;"><h4>Trois modes d'élimination recensés dans la littérature</h4>
+   <ul class="points">
+     <li>Élimination des protections souillées dans les toilettes.</li>
+     <li>Élimination par incinération.</li>
+     <li>Élimination dans les poubelles ordinaires.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- III. METHODE 1 */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Type d'étude, période et population",
+ html:`<div class="stat-grid">
+   <div class="stat"><div class="n">Transversale</div><div class="l">Étude descriptive à visée transversale</div></div>
+   <div class="stat"><div class="n">26 Jan – 30 Avr</div><div class="l">Période d'étude (2026)</div></div>
+   <div class="stat"><div class="n">15–49 ans</div><div class="l">Femmes en âge de procréer, hôpital de zone de Savalou</div></div>
+ </div>
+ <div class="body-text" style="margin-top:1.3rem;">
+   <p>L'étude a concerné toutes les femmes de 15 à 49 ans fréquentant l'hôpital de zone de Savalou au cours de la période d'étude retenue.</p>
+ </div>`},
+
+/* -------------------------------------------------- III. METHODE 2 CRITERES */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Critères de sélection",
+ two:true,
+ left:`<div class="card"><h4>Critères d'inclusion</h4><p>Femmes âgées de 15 à 49 ans, en période d'activité génitale, ayant librement consenti à participer à l'étude.</p></div>`,
+ right:`<div class="card"><h4>Critères de non-inclusion</h4>
+   <ul class="points">
+     <li>Femmes ne souhaitant pas participer.</li>
+     <li>Âge hors de la tranche 15–49 ans.</li>
+     <li>Mineures sans autorisation parentale.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- III. METHODE 3 ECHANTILLON & VARIABLES */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Échantillonnage, taille et variables",
+ two:true,
+ left:`<div class="card"><h4>Échantillon</h4>
+   <p><strong>Méthode :</strong> non probabiliste de commodité.</p>
+   <p><strong>Taille :</strong> 46 femmes répondant aux critères d'inclusion durant la période d'étude.</p></div>`,
+ right:`<div class="card"><h4>Variables étudiées</h4>
+   <ul class="points">
+     <li><strong>Dépendantes :</strong> connaissance et pratique de l'hygiène menstruelle.</li>
+     <li><strong>Indépendantes :</strong> facteurs socioculturels, économiques, environnementaux, personnels et éducatifs.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- III. METHODE 4 COLLECTE ETHIQUE */
+{type:"content", section:"III", eyebrow:"Cadre et méthode d'étude", title:"Collecte des données, traitement et éthique",
+ html:`<div class="body-text">
+   <p><strong>Technique :</strong> enquête par questionnaire adressé directement aux femmes de 15 à 49 ans. <strong>Traitement :</strong> saisie et analyse via Microsoft Word 2019 et Excel 2019.</p>
+ </div>
+ <div class="card" style="margin-top:.8rem;"><h4>Aspects éthiques</h4>
+   <ul class="points">
+     <li>Autorisation obtenue de l'hôpital de zone de Savalou et consentement libre et éclairé.</li>
+     <li>Conformité à la loi n° 2010-40 sur l'éthique de la recherche en santé au Bénin.</li>
+     <li>Anonymat garanti par un codage numérique des questionnaires.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- IV. RESULTATS DEMOGRAPHIE */
+{type:"content", section:"IV", eyebrow:"Résultats & Commentaires", title:"Profil démographique des femmes enquêtées",
+ two:true,
+ left:`<div class="body-text">
+   <p>L'âge des répondantes s'étend de <strong>15 à 38 ans</strong>, avec une moyenne de <strong>22,7 ans</strong>, reflétant une population hétérogène : élèves, étudiantes, femmes actives ou inactives.</p>
+   <p>18 participantes ont 19 ans ou moins, 11 ont entre 20 et 25 ans, et 15 ont 26 ans et plus.</p>
+ </div>`,
+ right:`<div class="stat-grid" style="grid-template-columns:1fr;">
+   <div class="stat"><div class="n">46</div><div class="l">femmes enquêtées au total</div></div>
+   <div class="stat"><div class="n">22,7 ans</div><div class="l">âge moyen des participantes</div></div>
+ </div>`},
+
+/* -------------------------------------------------- IV. RESULTATS MENARCHE */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Âge à la ménarche au sein de l'échantillon",
+ note:"73,9 % des participantes ont eu leurs premières règles après l'âge de 13 ans — cohérent avec les données africaines sur la puberté féminine, influencée par la nutrition et le niveau socioéconomique.",
+ bars:[
+   {l:"9 ans", v:2.2},
+   {l:"11 ans", v:2.2},
+   {l:"12 ans", v:10.9},
+   {l:"13 ans", v:10.9},
+   {l:"Après 13 ans", v:73.9}
+ ]},
+
+/* -------------------------------------------------- IV. RESULTATS INFO PREALABLE */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Information avant les premières règles et sources",
+ note:"45,6 % des participantes déclarent n'avoir reçu aucune information avant leurs premières règles. Parmi celles informées, la mère domine très largement comme source de savoir.",
+ bars:[
+   {l:"Mère", v:61.5},
+   {l:"Enseignants", v:26.9},
+   {l:"Amies", v:11.4},
+   {l:"Sœurs", v:11.5},
+   {l:"Père / réseaux sociaux", v:3.8}
+ ]},
+
+/* -------------------------------------------------- IV. RESULTATS SATISFACTION */
+{type:"content", section:"IV", eyebrow:"Résultats & Commentaires", title:"Perception de l'adéquation des informations reçues",
+ html:`<div class="stat-grid">
+   <div class="stat"><div class="n">86,95 %</div><div class="l">se déclarent satisfaites des informations reçues</div></div>
+   <div class="stat"><div class="n">13,05 %</div><div class="l">se déclarent insatisfaites ou sans avis</div></div>
+   <div class="stat"><div class="n">40 / 46</div><div class="l">participantes concernées par cette satisfaction déclarée</div></div>
+ </div>
+ <div class="quote-block" style="margin-top:1.4rem;"><p>Ce résultat doit être lu avec prudence : la satisfaction déclarée ne préjuge pas de la qualité ou de la complétude objective des informations reçues.</p></div>`},
+
+/* -------------------------------------------------- IV. RESULTATS CYCLE ET FONCTION */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Connaissance du cycle menstruel et de sa fonction",
+ note:"71,1 % estiment correctement la durée normale du cycle (21 à 35 jours). Concernant la fonction des règles : 39,1 % l'associent à l'élimination d'impuretés, 37 % à une préparation à la grossesse.",
+ bars:[
+   {l:"Durée du cycle correcte", v:71.1},
+   {l:"Élimination d'impuretés", v:39.1},
+   {l:"Préparation à la grossesse", v:37},
+   {l:"Les deux fonctions", v:19.6}
+ ]},
+
+/* -------------------------------------------------- IV. RESULTATS PRODUITS */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Produits d'hygiène menstruelle utilisés",
+ note:"Le tissu menstruel artisanal reste le produit le plus utilisé (19 participantes), devant les serviettes jetables (13) et les serviettes lavables (4) utilisées seules — un signe de précarité menstruelle.",
+ bars:[
+   {l:"Tissu menstruel (artisanal)", v:41.3},
+   {l:"Serviettes jetables (seules)", v:28.3},
+   {l:"Serviettes lavables (seules)", v:8.7},
+   {l:"Autres combinaisons", v:21.7}
+ ]},
+
+/* -------------------------------------------------- IV. RESULTATS FREQUENCE */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Fréquence de changement des protections",
+ note:"73,91 % des femmes changent leur protection 3 fois par jour, un rythme jugé adéquat sur le plan de l'hygiène.",
+ bars:[
+   {l:"3 fois par jour", v:73.91},
+   {l:"2 fois par jour", v:19.56},
+   {l:"4 fois par jour", v:4.35},
+   {l:"1 fois par jour", v:2.17}
+ ]},
+
+/* -------------------------------------------------- IV. RESULTATS HYGIENE INTIME */
+{type:"content", section:"IV", eyebrow:"Résultats & Commentaires", title:"Hygiène intime et corporelle pendant les règles",
+ two:true,
+ left:`<div class="card"><h4>Toilette intime</h4>
+   <div class="bar-row"><div class="lbl">Pratiquée par toutes</div><div class="bar-track"><div class="bar-fill" data-val="100"></div></div><div class="val">100 %</div></div>
+   <div class="bar-row"><div class="lbl">3 fois / jour</div><div class="bar-track"><div class="bar-fill" data-val="78.26"></div></div><div class="val">78,3 %</div></div>
+ </div>`,
+ right:`<div class="card"><h4>Douche pendant les règles</h4>
+   <div class="bar-row"><div class="lbl">Prennent une douche</div><div class="bar-track"><div class="bar-fill" data-val="97.8"></div></div><div class="val">97,8 %</div></div>
+   <div class="bar-row"><div class="lbl">Eau + savon (intime)</div><div class="bar-track"><div class="bar-fill" data-val="45.7"></div></div><div class="val">45,7 %</div></div>
+ </div>`},
+
+/* -------------------------------------------------- IV. RESULTATS ELIMINATION */
+{type:"chart", section:"IV", eyebrow:"Résultats & Commentaires", title:"Élimination des protections usagées",
+ note:"58,70 % des participantes brûlent ou enterrent leurs protections usagées — une pratique révélatrice d'un problème de gestion des déchets menstruels, parfois liée au souhait de dissimuler les traces des règles.",
+ bars:[
+   {l:"Brûlées ou enterrées", v:58.70},
+   {l:"Sachet noir puis poubelle", v:23.91},
+   {l:"Rincées puis emballées", v:17.39}
+ ]},
+
+/* -------------------------------------------------- IV. COMMENTAIRES - CONNAISSANCES */
+{type:"content", section:"IV", eyebrow:"Résultats & Commentaires", title:"Commentaire : des connaissances fragmentées",
+ html:`<div class="body-text">
+   <p>Le constat de <strong>45,6 % des femmes sans information</strong> avant leurs premières règles rejoint des tendances déjà documentées ailleurs, bien qu'à des degrés variables selon les contextes.</p>
+   <p>La <strong>centralité de la mère</strong> comme source d'information (61,5 %) est confirmée par plusieurs études africaines, mais pose un problème structurel : lorsque la mère est elle-même peu informée, le cycle de l'ignorance se perpétue.</p>
+ </div>
+ <div class="card" style="margin-top:.8rem;"><h4>Un acquis à valoriser</h4><p>93 % des participantes connaissent au moins un produit d'hygiène menstruelle, et 97,8 % pratiquent la douche pendant leurs règles — une base positive pour les interventions éducatives futures.</p></div>`},
+
+/* -------------------------------------------------- IV. COMMENTAIRES - PRECARITE ET TABOUS */
+{type:"content", section:"IV", eyebrow:"Résultats & Commentaires", title:"Commentaire : précarité menstruelle et tabous",
+ html:`<div class="body-text">
+   <p>Les menstruations restent entourées d'un halo de silence et de honte : <strong>63 % des participantes</strong> déclarent ressentir de la gêne à demander des serviettes hygiéniques.</p>
+   <p>Le recours à des remèdes traditionnels contre la dysménorrhée révèle un accès limité aux analgésiques conventionnels, tandis que la douleur menstruelle est souvent normalisée sans consultation médicale.</p>
+ </div>
+ <div class="card" style="margin-top:.8rem;"><h4>Absentéisme scolaire</h4><p>Selon l'UNICEF, les adolescentes africaines manquent en moyenne 10 à 20 % de leurs journées scolaires en raison des menstruations — un désavantage éducatif cumulé considérable.</p></div>`},
+
+/* -------------------------------------------------- CONCLUSION */
+{type:"content", section:"ccl", eyebrow:"Conclusion", title:"Vers une véritable justice menstruelle",
+ html:`<div class="quote-block" style="margin-bottom:1.3rem;"><p>L'éducation à la santé menstruelle demeure fragmentée et insuffisante, entretenant tabous et représentations négatives. Une précarité menstruelle multidimensionnelle persiste, liée au manque d'infrastructures et aux difficultés économiques.</p></div>
+ <div class="stat-grid">
+   <div class="stat"><div class="n">+95 %</div><div class="l">des participantes prêtes à s'impliquer dans des séances d'information</div></div>
+   <div class="stat"><div class="n">28 mai</div><div class="l">Journée mondiale de l'hygiène menstruelle, célébrée depuis 2014</div></div>
+   <div class="stat"><div class="n">3</div><div class="l">axes de recommandations : éducation, infrastructures, déstigmatisation</div></div>
+ </div>`},
+
+/* -------------------------------------------------- SUGGESTIONS - ECOLES */
+{type:"content", section:"sugg", eyebrow:"Suggestions", title:"Aux établissements scolaires",
+ html:`<div class="card"><ul class="points">
+     <li>Toilettes séparées pour les filles, équipées de serrures fonctionnelles garantissant l'intimité.</li>
+     <li>Accès à l'eau courante à proximité immédiate des toilettes.</li>
+     <li>Poubelles fermées, vidées et désinfectées régulièrement.</li>
+     <li>Infirmeries scolaires fonctionnelles, dotées d'analgésiques de base (paracétamol, ibuprofène).</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- SUGGESTIONS - SANTE / COMMUNAUTE */
+{type:"content", section:"sugg", eyebrow:"Suggestions", title:"Aux professionnels de santé et acteurs communautaires",
+ html:`<div class="card"><ul class="points">
+     <li>Organiser des campagnes de sensibilisation sur l'hygiène menstruelle dans les écoles et les communautés, chaque semestre.</li>
+     <li>Impliquer les enseignants et les leaders communautaires pour une meilleure compréhension de l'hygiène menstruelle.</li>
+     <li>Développer des contenus numériques de qualité, en langues locales, abordant la santé menstruelle de manière positive, scientifique et déstigmatisante.</li>
+   </ul></div>`},
+
+/* -------------------------------------------------- FIN */
+{type:"end"}
+
+];
+
+/* ============================================================
+   MOTEUR DE RENDU
+   ============================================================ */
+const deck = document.getElementById('deck');
+
+function renderCover(){
+  return `
+  <div class="kicker">République du Bénin — Université d'Abomey-Calavi — INMeS</div>
+  <h1>Bienvenue à la soutenance de</h1>
+  <div class="rule"></div>
+  <div class="names">KANDISSOUNON Gaya Jorelle</div>
+  <div class="amp">&amp;</div>
+  <div class="names">YAROU Dalifatou</div>
+  <div class="foot">Soutenance publique du Rapport de fin de formation — Licence en Sciences Infirmières et Obstétricales</div>
+  `;
+}
+
+function renderTitle(){
+  return `
+  <div class="instit">École Supérieure des Sages-Femmes d'État — ESSFE</div>
+  <div class="theme-label">Thème</div>
+  <h1>Connaissances et pratiques de l'hygiène menstruelle des femmes en âge de procréer âgées de 15 à 49 ans reçues à l'hôpital de zone de Savalou en 2026</h1>
+  <div class="rule"></div>
+  <div style="font-size:1rem; letter-spacing:.03em; color:#dbe8fa;">Rapport de fin de formation — Année académique 2025–2026</div>
+  <div class="foot">Sous la direction de Mme Adnette AHOUNOU &amp; Mme Inès ATANHLOUETO</div>
+  `;
+}
+
+function renderBars(bars){
+  return bars.map(b=>`
+    <div class="bar-row">
+      <div class="lbl">${b.l}</div>
+      <div class="bar-track"><div class="bar-fill" data-val="${b.v}"></div></div>
+      <div class="val">${b.v.toString().replace('.',',')}\u00A0%</div>
+    </div>`).join('');
+}
+
+function renderChartSlide(s){
+  return `
+  <div class="eyebrow"><span class="roman">${ROMAN[s.section]||''}</span>${s.eyebrow}</div>
+  <h2>${s.title}</h2>
+  <div class="chart-wrap">${renderBars(s.bars)}</div>
+  <div class="chart-source">${s.note}</div>
+  `;
+}
+
+function renderContentSlide(s){
+  let body;
+  if(s.html){ body = s.html; }
+  else if(s.two){ body = `<div class="two-col"><div>${s.left}</div><div>${s.right}</div></div>`; }
+  const eyebrow = s.eyebrow ? `<div class="eyebrow"><span class="roman">${ROMAN[s.section]||''}</span>${s.eyebrow}</div>` : '';
+  return `${eyebrow}<h2>${s.title}</h2>${body}`;
+}
+
+function renderEnd(){
+  return `
+  <h2>Merci de votre attention</h2>
+  <div class="rule"></div>
+  <p style="max-width:640px; font-size:1.05rem; color:#dbe8fa; margin:0 auto;">Nous restons à votre disposition pour vos questions, remarques et suggestions.</p>
+  <div style="margin-top:2.2rem; font-size:.86rem; color:var(--blue-300); letter-spacing:.04em;">KANDISSOUNON Gaya Jorelle &nbsp;&middot;&nbsp; YAROU Dalifatou<br>École Supérieure des Sages-Femmes d'État — INMeS — Université d'Abomey-Calavi</div>
+  `;
+}
+
+/* Numérotation visible : la couverture et le titre ne comptent pas comme pages numérotées de contenu */
+let pageCounter = 0;
+const pageTotal = slides.filter(s=>s.type==='content'||s.type==='chart').length;
+
+slides.forEach((s,i)=>{
+  const el = document.createElement('div');
+  el.className = 'slide';
+  el.dataset.index = i;
+
+  if(s.type==='cover'){ el.classList.add('slide-cover'); el.innerHTML = renderCover(); }
+  else if(s.type==='title'){ el.classList.add('slide-title'); el.innerHTML = renderTitle(); }
+  else if(s.type==='chart'){ el.classList.add('slide-content','framed'); el.innerHTML = cornerSet()+renderChartSlide(s); }
+  else if(s.type==='content'){ el.classList.add('slide-content','framed'); el.innerHTML = cornerSet()+renderContentSlide(s); }
+  else if(s.type==='end'){ el.classList.add('end-slide'); el.innerHTML = renderEnd(); }
+
+  if(s.type==='content' || s.type==='chart'){
+    pageCounter++;
+    const foot = document.createElement('div');
+    foot.className='slide-foot';
+    foot.innerHTML = `<span>${s.section? SECTION_LABELS[s.section]: ''}</span><span class="pageno">${pageCounter} / ${pageTotal}</span>`;
+    el.appendChild(foot);
+  }
+  deck.appendChild(el);
+});
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+let current = 0;
+const total = slides.length;
+const els = document.querySelectorAll('.slide');
+const progressBar = document.getElementById('progressBar');
+const counter = document.getElementById('counter');
+
+function animateBars(container){
+  container.querySelectorAll('.bar-fill').forEach(b=>{
+    const v = b.dataset.val;
+    b.style.width='0%';
+    requestAnimationFrame(()=> requestAnimationFrame(()=>{ b.style.width = v+'%'; }));
+  });
+}
+
+function goTo(n){
+  n = Math.max(0, Math.min(total-1, n));
+  els[current].classList.remove('active');
+  current = n;
+  const el = els[current];
+  el.classList.add('active');
+  animateBars(el);
+  progressBar.style.width = ((current+1)/total*100)+'%';
+  counter.textContent = (current+1)+' / '+total;
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>goTo(current+1));
+document.getElementById('prevBtn').addEventListener('click', ()=>goTo(current-1));
+window.addEventListener('keydown', e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)) goTo(current+1);
+  if(['ArrowLeft','PageUp'].includes(e.key)) goTo(current-1);
+  if(e.key==='Home') goTo(0);
+  if(e.key==='End') goTo(total-1);
+});
+let touchX=null;
+window.addEventListener('touchstart', e=>touchX=e.touches[0].clientX);
+window.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(dx<-50) goTo(current+1);
+  if(dx>50) goTo(current-1);
+  touchX=null;
+});
+
+goTo(0);
+</script>
+</body>
+</html>
